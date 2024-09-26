@@ -1,70 +1,36 @@
 import React, { useState } from 'react';
 import './App.css';
+import LoginForm from './page/Auth/LoginForm';
+import SignupForm from './page/Auth/SignupForm';
 
 function App() {
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [message, setMessage] = useState('');
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
 
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode);
+    setMessage('');
   };
 
   return (
       <div className="auth-container">
+        {isMessageVisible && <div className="message-modal">{message}</div>}
+
         <div className={`auth-box ${isLoginMode ? 'login-mode' : 'signup-mode'}`}>
           <div className="form-container">
             {isLoginMode ? (
-                <form className="form login-form">
-                  <h2>Sign In</h2>
-                  <input type="email" placeholder="Email" className="input" />
-                  <input type="password" placeholder="Password" className="input" />
-                  <div className="social-login">
-                    <button className="social-btn google-btn">
-                      <img
-                          src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
-                          alt="Google Icon"/>
-                      Sign in with Google
-                    </button>
-                    <button className="social-btn kakao-btn">
-                      <img
-                          src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" alt="Kakao" />
-                      Sign in with Kakao
-                    </button>
-                  </div>
-                  <button className="btn">Sign In</button>
-                  <p>
-                    Don't have an account?{' '}
-                    <span className="toggle-link" onClick={toggleMode}>
-                  Sign Up
-                </span>
-                  </p>
-                </form>
+                <LoginForm
+                    toggleMode={toggleMode}
+                    setMessage={setMessage}
+                    setIsMessageVisible={setIsMessageVisible}
+                />
             ) : (
-                <form className="form signup-form">
-                  <h2>Sign Up</h2>
-                  <input type="text" placeholder="Username" className="input" />
-                  <input type="email" placeholder="Email" className="input" />
-                  <input type="password" placeholder="Password" className="input" />
-                  <div className="social-login">
-                    <button className="social-btn google-btn">
-                      <img
-                          src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
-                          alt="Google Icon"/>
-                      Sign up with Google
-                    </button>
-                    <button className="social-btn kakao-btn">
-                      <img
-                          src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" alt="Kakao" />
-                      Sign up with Kakao
-                    </button>
-                  </div>
-                  <button className="btn">Sign Up</button>
-                  <p>
-                    Already have an account?{' '}
-                    <span className="toggle-link" onClick={toggleMode}>
-                  Sign In
-                </span>
-                  </p>
-                </form>
+                <SignupForm
+                    toggleMode={toggleMode}
+                    setMessage={setMessage}
+                    setIsMessageVisible={setIsMessageVisible}
+                />
             )}
           </div>
           <div className="overlay-container">
