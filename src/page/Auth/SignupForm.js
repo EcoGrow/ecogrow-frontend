@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { signup } from '../../api/auth';
 
+const redirectToKakaoSignup = () => {
+  const KAKAO_CLIENT_ID = process.env.REACT_APP_KAKAO_CLIENT_ID; // 환경 변수에서 클라이언트 ID 가져오기
+  const KAKAO_REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI; // 환경 변수에서 리다이렉트 URI 가져오기
+
+  const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
+  window.location.href = kakaoLoginUrl;
+};
+
+
 const SignupForm = ({ toggleMode, setMessage, setIsMessageVisible }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    name: ''
   });
 
   const handleInputChange = (e) => {
@@ -62,13 +70,6 @@ const SignupForm = ({ toggleMode, setMessage, setIsMessageVisible }) => {
             name="password"
             onChange={handleInputChange}
         />
-        <input
-            type="text"
-            placeholder="Name"
-            className="input"
-            name="name"
-            onChange={handleInputChange}
-        />
         <div className="social-login">
           <button className="social-btn google-btn">
             <img
@@ -77,7 +78,7 @@ const SignupForm = ({ toggleMode, setMessage, setIsMessageVisible }) => {
             />
             Sign up with Google
           </button>
-          <button className="social-btn kakao-btn">
+          <button className="social-btn kakao-btn" onClick={redirectToKakaoSignup}>
             <img
                 src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"
                 alt="Kakao"
