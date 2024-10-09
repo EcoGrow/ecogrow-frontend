@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
 import { signup } from '../../api/auth';
 
+const redirectToKakaoSignup = () => {
+  const KAKAO_CLIENT_ID = process.env.REACT_APP_KAKAO_CLIENT_ID; // 환경 변수에서 클라이언트 ID 가져오기
+  const KAKAO_REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI; // 환경 변수에서 리다이렉트 URI 가져오기
+
+  const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
+  window.location.href = kakaoLoginUrl;
+};
+
+// 구글 로그인 리다이렉트 함수 추가
+const redirectToGoogleSignup = () => {
+  const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID; // 환경 변수에서 구글 클라이언트 ID 가져오기
+  const GOOGLE_REDIRECT_URI = process.env.REACT_APP_GOOGLE_REDIRECT_URI; // 환경 변수에서 구글 리다이렉트 URI 가져오기
+
+  const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_REDIRECT_URI}&response_type=code&scope=openid%20profile%20email`;
+  window.location.href = googleLoginUrl;
+};
+
+
 const SignupForm = ({ toggleMode, setMessage, setIsMessageVisible }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    name: ''
   });
 
   const handleInputChange = (e) => {
@@ -62,22 +79,15 @@ const SignupForm = ({ toggleMode, setMessage, setIsMessageVisible }) => {
             name="password"
             onChange={handleInputChange}
         />
-        <input
-            type="text"
-            placeholder="Name"
-            className="input"
-            name="name"
-            onChange={handleInputChange}
-        />
         <div className="social-login">
-          <button className="social-btn google-btn">
+          <button className="social-btn google-btn" onClick={redirectToGoogleSignup}>>
             <img
                 src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
                 alt="Google Icon"
             />
             Sign up with Google
           </button>
-          <button className="social-btn kakao-btn">
+          <button className="social-btn kakao-btn" onClick={redirectToKakaoSignup}>
             <img
                 src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"
                 alt="Kakao"
