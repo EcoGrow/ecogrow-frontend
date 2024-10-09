@@ -9,6 +9,15 @@ const redirectToKakaoLogin = () => {
   window.location.href = kakaoLoginUrl;
 };
 
+const redirectToGoogleLogin = () => {
+  const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const GOOGLE_REDIRECT_URI = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
+
+  const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_REDIRECT_URI}&response_type=code&scope=openid%20profile%20email`;
+  window.location.href = googleLoginUrl;
+};
+
+
 const LoginForm = ({ toggleMode, setMessage, setIsMessageVisible }) => {
   const [formData, setFormData] = useState({
     username: '',
@@ -63,14 +72,16 @@ const LoginForm = ({ toggleMode, setMessage, setIsMessageVisible }) => {
             onChange={handleInputChange}
         />
         <div className="social-login">
-          <button className="social-btn google-btn">
+          <button className="social-btn google-btn"
+                  onClick={redirectToGoogleLogin}>
             <img
                 src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"
                 alt="Google Icon"
             />
             Sign in with Google
           </button>
-          <button className="social-btn kakao-btn" onClick={redirectToKakaoLogin}>
+          <button className="social-btn kakao-btn"
+                  onClick={redirectToKakaoLogin}>
             <img
                 src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"
                 alt="Kakao"
