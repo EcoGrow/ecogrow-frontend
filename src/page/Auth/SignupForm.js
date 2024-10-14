@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { signup } from '../../api/auth';
+import './SignupForm.css';
 
 const redirectToKakaoSignup = () => {
   const KAKAO_CLIENT_ID = process.env.REACT_APP_KAKAO_CLIENT_ID; // 환경 변수에서 클라이언트 ID 가져오기
