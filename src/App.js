@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AuthPage from './page/Auth/AuthPage';
 import MainPage from './page/MainPage';
-import NewsPage from './page/Auth/NewsPage';
+import NewsPage from './page/NewsPage';
 import KakaoCallback from './page/Auth/KakaoCallback';
 import GoogleCallback from "./page/Auth/GoogleCallback";
 
