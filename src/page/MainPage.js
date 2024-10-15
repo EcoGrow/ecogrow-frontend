@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './MainPage.css';
 
 const MainPage = () => {
+  const navigate = useNavigate();
 
+  // 스크롤에 따른 섹션의 visibility 변경
   const isElementInViewport = (el) => {
     const rect = el.getBoundingClientRect();
     return (
@@ -35,41 +38,77 @@ const MainPage = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <a href="https://ecowatch.news/">EcoGrow</a>
-            <a href="https://ecowatch.news/environmental-news">Environmental News</a>
-            <a href="https://ecowatch.news/record-trash">Record Trash</a>
-            <a href="https://ecowatch.news/trash-records">Check Trash Records</a>
+            <Link to="/">EcoGrow</Link>
+            <Link to="/news">Environmental News</Link>
+            <Link to="/record-trash">Record Trash</Link>
+            <Link to="/trash-records">Check Trash Records</Link>
           </div>
           <div className="header-right">
-            <a href="https://ecowatch.news/my-page">My Page</a>
-            <a href="https://ecowatch.news/login">Login</a>
-            <a href="https://ecowatch.news/logout">Logout</a>
+            <Link to="/my-page">My Page</Link>
+            <Link to="/login">Login</Link>
+            <Link to="/logout">Logout</Link>
           </div>
         </header>
 
         <main className="main-content">
-          <img src="/images/free-icon-globe-6004805.png" alt="Personal Icon" className="personal-image" />
+          <img src="/images/free-icon-globe-6004805.png" alt="Personal Icon"
+               className="personal-image"/>
           <h1 className="hero">EcoGrow는 환경을 연구합니다</h1>
           <p className="sub-hero">환경을 위한 우리의 노력이 지속 가능한 미래를 만듭니다.</p>
-          <button className="cta-button">뉴스 구독하기</button>
+          <button className="cta-button">소식 구독하기</button>
         </main>
 
-        <section className="content-section">
-          <h2>환경 뉴스</h2>
-          <div className="content-grid">
-            <div className="content-item">
-              <h3>플라스틱 재활용의 혁신</h3>
-              <p>새로운 기술로 플라스틱 재활용 효율이 50% 향상되었습니다.</p>
+        <section className="content-section visible">
+          <img src="/images/free-icon-world-news-2644746.png" alt="News Icon"
+               className="ficon"/>
+          <h2 className="hero">최신 환경 뉴스</h2>
+          <p className="sub-hero">현재 가장 이슈화 되고 있는 최신 환경 뉴스를 확인하세요!</p>
+          <button className="cta-button" onClick={() => navigate('/news')}>뉴스
+            확인하기
+          </button>
+        </section>
+
+        <section className="content-section visible">
+        <img src="/images/free-icon-recycle-bin-902502.png" alt="News Icon"
+               className="ficon"/>
+          <h2 className="hero">분리수거의 중요성</h2>
+          <p className="sub-hero">올바른 분리수거는 지구를 살리는 첫걸음입니다. 함께 실천해요!</p>
+          <button className="cta-button"
+                  onClick={() => navigate('/record-trash')}>쓰레기 기록하러 가기
+          </button>
+        </section>
+
+        <section className="content-section visible">
+          <h2 className="heroo">재활용 쓰레기의 중요성</h2>
+          <p className="sub-hero">올바른 재활용은 환경 보호의 핵심입니다. 함께 실천해 보아요!</p>
+          <div className="recycling-grid">
+            <div className="recycling-item">
+              <div className="recycling-icon">♻️</div>
+              <h3>자원 절약</h3>
+              <p>재활용을 통해 새로운 자원 사용을 줄일 수 있습니다.</p>
             </div>
-            <div className="content-item">
-              <h3>재생 에너지의 미래</h3>
-              <p>태양광 발전 비용이 5년 내 화석 연료보다 저렴해질 전망입니다.</p>
+            <div className="recycling-item">
+              <div className="recycling-icon">🌱</div>
+              <h3>환경 보호</h3>
+              <p>쓰레기 매립과 소각으로 인한 환경 오염을 줄일 수 있습니다.</p>
             </div>
-            <div className="content-item">
-              <h3>해양 생태계 보호 활동</h3>
-              <p>전 세계적인 해양 정화 프로젝트가 시작되었습니다.</p>
+            <div className="recycling-item">
+              <div className="recycling-icon">💡</div>
+              <h3>에너지 절약</h3>
+              <p>재활용은 새 제품 생산보다 적은 에너지를 사용합니다.</p>
             </div>
           </div>
+          <button className="cta-button" style={{marginTop: '2rem'}}>재활용 가이드
+            보기
+          </button>
+        </section>
+
+        <section className="content-section visible">
+          <img src="/images/free-icon-arcade-machine-4176434.png" alt="News Icon"
+               className="ficon"/>
+          <h2 className="hero2">분리수거 게임</h2>
+          <p className="sub-hero2">분리수거 게임을 통해서 인식과 재미를 느껴보세요!</p>
+          <button className="cta-button">게임 하러가기</button>
         </section>
       </div>
   );
