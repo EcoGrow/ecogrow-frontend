@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { googleLogin } from '../../api/auth'; // googleLogin API 호출을 위한 함수
+import React, {useState, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {googleLogin} from '../../api/auth'; // googleLogin API 호출을 위한 함수
 
 const GoogleCallback = () => {
   const navigate = useNavigate();
@@ -24,18 +24,13 @@ const GoogleCallback = () => {
         console.log('구글 로그인 응답:', response);
 
         // 성공적인 응답 처리
-        if (response.status === 200) {
+        if (response.data) {
           console.log('구글 로그인 성공');
-          if (response.data) {
-            localStorage.setItem('access_token', response.data.token); // JWT 토큰 저장
-          }
-          // 메인 페이지로 리다이렉트
+          localStorage.setItem('access_token', response.data); // JWT 토큰 저장
           navigate('/');
-          return; // 함수 종료
+        } else {
+          throw new Error(response.data?.msg || '유효한 토큰을 받지 못했습니다');
         }
-
-        // 응답에 토큰이 없거나 기타 오류 상황
-        throw new Error(response.msg || '유효한 토큰을 받지 못했습니다');
 
       } catch (error) {
         console.error('구글 로그인 오류:', error);
