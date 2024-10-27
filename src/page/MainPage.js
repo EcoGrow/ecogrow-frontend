@@ -4,6 +4,7 @@ import './MainPage.css';
 
 const MainPage = () => {
   const navigate = useNavigate();
+  const handleLoginClick = (e) => {
 
   // 스크롤에 따른 섹션의 visibility 변경
   const isElementInViewport = (el) => {
