@@ -139,6 +139,7 @@ const WasteRecord = () => {
         </header>
 
         <div className="WR-content">
+          <h1>Record your Trash</h1>
           <div className="graph-banner">
             {/*Bar 및 Pie 차트에 전달*/}
             <div className="graph-container">
@@ -169,10 +170,11 @@ const WasteRecord = () => {
           <div className="individual-records">
             {records.length > 0 ? (
                 records.map((record) => (
-                    <div className="record-card" key={record.id}>
+                    <Link to={`/wasteRecord/${record.id}`}
+                          className="record-card" key={record.id}>
                       <h3>작성자: {record.username}</h3>
-                      <h4>기록 일자: {record.createdAt}</h4>
-                    </div>
+                      <h4>기록 날짜: {record.createdAt}</h4>
+                    </Link>
                 ))
             ) : (
                 <p>No records found.</p>
