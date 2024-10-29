@@ -2,6 +2,7 @@ import React from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import AuthPage from './page/Auth/AuthPage';
 import MainPage from './page/MainPage';
+import MyPage from './page/MyPage';
 import NewsPage from './page/NewsPage';
 import WasteRecord from './page/WasteRecord';
 import WasteRecordWrite from './page/WasteRecordWrite';
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage/>}/>
           <Route path="/news" element={<NewsPage/>}/>
+          <Route path="/my-page" element={<MyPage/>}/>
           <Route path="/wasteRecord" element={<WasteRecord/>}/>
           <Route path="/wasteRecordWrite" element={<WasteRecordWrite/>}/>
           <Route path="/wasteRecordDetail" element={<WasteRecordDetail/>}/>
