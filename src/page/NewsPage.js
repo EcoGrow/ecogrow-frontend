@@ -1,57 +1,95 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import LogoutButton from '../components/Logout';
+import Modal from '../components/Modal';
 import './NewsPage.css';
 
 const NewsPage = () => {
-  const [articles, setArticles] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    const API_KEY = ''; // Replace with your actual API key
-    const NEWS_API_URL = `https://newsapi.org/v2/everything?q=environment&apiKey=${API_KEY}`;
+  const handleLoginClick = (e) => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {
+      setMessage('이미 로그인이 되어있습니다');
+      setIsModalOpen(true);
+      e.preventDefault(); // 로그인 페이지로 이동 방지
+    } else {
+      navigate('/login'); // 로그인 페이지로 이동
+    }
+  };
 
-    const fetchNews = async () => {
-      try {
-        const response = await fetch(NEWS_API_URL);
-        const data = await response.json();
-        setArticles(data.articles || []);
-      } catch (error) {
-        console.error('Error fetching news:', error);
-      }
-    };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  // Simulated NEWS API response
+  const newsData = [
+    {
+      title: '북극이 최근 자주 보도되는 이유',
+      date: '2024년 10월 13일',
+      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
+    },
+    {
+      title: "친환경 자연사 박물관이 공개한 '팬더곰' 흔적 첫 발견",
+      date: '2024년 10월 9일',
+      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
+    },
+    {
+      title: '전 세계 고래 집약 공개년 사상 최악의 이유',
+      date: '2024년 10월 5일',
+      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
+    },
+    {
+      title: '충주, 마산자연재해 예경시설 거 준공식 개최',
+      date: '2024년 10월 1일',
+      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
+    },
+    {
+      title: "구글, 마이크로소프트 '탄소 제거' 계약 체결",
+      date: '2024년 9월 27일',
+      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
+    },
+    {
+      title: '환경부, 전국 상수도 오염물질 검사결과 발표',
+      date: '2024년 9월 23일',
+      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
+    },
+  ];
 
-    fetchNews();
-  }, []);
+  const createNewsItem = (news) => (
+      <div className="news-item" key={news.title}>
+        <img src={news.imageUrl} alt={news.title} className="news-image"/>
+        <div className="news-content">
+          <h2 className="news-title">{news.title}</h2>
+          <p className="news-date">{news.date}</p>
+        </div>
+      </div>
+  );
 
   return (
       <div>
         <header className="header">
           <div className="header-left">
-            <a href="https://ecowatch.news/">EcoGrow</a>
-            <a href="https://ecowatch.news/environmental-news">Environmental News</a>
-            <a href="https://ecowatch.news/record-trash">Record Trash</a>
-            <a href="https://ecowatch.news/trash-records">Check Trash Records</a>
+            <Link to="/">EcoGrow</Link>
+            <Link to="/news">Environmental News</Link>
+            <Link to="/wasteRecord">Record Trash</Link>
+            <Link to="/recycling-tips">Recycling Tips</Link>
           </div>
           <div className="header-right">
-            <a href="https://ecowatch.news/my-page">My Page</a>
-            <a href="https://ecowatch.news/login">Login</a>
-            <a href="https://ecowatch.news/logout">Logout</a>
+            <Link to="/my-page">My Page</Link>
+            <Link to="/login" onClick={handleLoginClick}>Login</Link>
+            <LogoutButton/>
           </div>
         </header>
 
-        <main className="news-grid">
-          {articles.length > 0 ? (
-              articles.map((article, index) => (
-                  <div className="news-item" key={index}>
-                    <img src={article.urlToImage} alt={article.title} className="news-image" />
-                    <div className="news-content">
-                      <h2 className="news-title">{article.title}</h2>
-                      <p className="news-description">{article.description}</p>
-                    </div>
-                  </div>
-              ))
-          ) : (
-              <p>No news articles available.</p>
-          )}
+        <main className="news-content">
+          <h1>Environmental News</h1>
+          <div className="news-grid">
+            {newsData.map((news) => createNewsItem(news))}
+          </div>
         </main>
+        {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
       </div>
   );
 };
