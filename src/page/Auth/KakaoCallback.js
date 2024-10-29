@@ -24,23 +24,15 @@ const KakaoCallback = () => {
         console.log('카카오 로그인 응답:', response);
 
         // 성공적인 응답 처리
-        if (response.statuscode === '200' && response.msg === '카카오 로그인 성공') {
+        if (response.data) {
           console.log('카카오 로그인 성공');
-          if (response.data) {
-            localStorage.setItem('access_token', response.data);
-          }
-          // 메인 페이지로 리다이렉트
+          localStorage.setItem('token', response.data); // Store JWT token
           navigate('/');
-          return; // 함수 종료
+        } else {
+          throw new Error(response.data?.msg || '유효한 토큰을 받지 못했습니다');
         }
-
-        // 응답에 토큰이 없거나 기타 오류 상황
-        if (!response.data) {
-          throw new Error(response.msg || '유효한 토큰을 받지 못했습니다');
-        }
-
       } catch (error) {
-        console.error('카카오 로그인 오류:', error);
+        console.error('카카오 로그인 오류 상세:', error);
         setError(error.response?.data?.msg || error.message);
       } finally {
         setLoading(false);
