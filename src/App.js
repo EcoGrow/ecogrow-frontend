@@ -17,7 +17,7 @@ function App() {
           <Route path="/news" element={<NewsPage/>}/>
           <Route path="/wasteRecord" element={<WasteRecord/>}/>
           <Route path="/wasteRecordWrite" element={<WasteRecordWrite/>}/>
-          <Route path="/wasteRecordDetail" element={<WasteRecordDetail/>}/>
+          <Route path="/wasteRecord/:recordId" element={<WasteRecordDetail />} />
           <Route path="/login"
                  element={<AuthPage/>}/> {/* 로그인 페이지는 /login 경로로 설정 */}
           <Route path="/signup" element={<AuthPage/>}/>
