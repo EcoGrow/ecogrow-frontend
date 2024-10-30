@@ -13,7 +13,7 @@ body, html {
 .graph-banner {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  gap: 10rem;
   margin-bottom: 4rem;
   background-color: white;
   border-radius: 10px;
