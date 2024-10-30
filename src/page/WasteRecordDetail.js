@@ -171,7 +171,7 @@ const WasteRecordDetail = () => {
         <main className="WRD-content">
           <h1>{record.username}'s Record</h1>
 
-          <div className="graph-banner">
+          <div className="chart-banner">
 
             {/* Visualization for waste types */}
             <div className="graph-container">
