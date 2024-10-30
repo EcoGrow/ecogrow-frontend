@@ -30,13 +30,15 @@ const WasteRecordDetail = () => {
   };
 
   const [wasteTypeData, setWasteTypeData] = useState({
-    labels: ['Plastic', 'Paper', 'Glass', 'Metal', 'Organic', 'Other'],
+    labels: ['Plastic', 'Paper', 'Glass', 'Metal', 'Organic', 'General Waste',
+      'Food Waste'],
     datasets: [{
       data: [],
       backgroundColor: [
         'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
         'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)',
-        'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)'
+        'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)',
+        'rgba(128, 128, 128, 0.6)'
       ],
       borderWidth: 1
     }]
@@ -60,7 +62,8 @@ const WasteRecordDetail = () => {
       glass: 0,
       metal: 0,
       organic: 0,
-      other: 0
+      general: 0,
+      food: 0
     };
     let recyclableCount = 0;
     let nonRecyclableCount = 0;
