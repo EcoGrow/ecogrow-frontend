@@ -108,7 +108,7 @@ const WasteRecordDetail = () => {
   useEffect(() => {
     const fetchRecord = async () => {
       try {
-        const response = await apiClient.get(`/api/waste/record/${recordId}`);
+        const response = await apiClient.get(`/api/waste/records/${recordId}`);
         setRecord(response.data.data); // Set the waste record data
         aggregateDataForCharts(response.data.data); // Aggregate data for charts
       } catch (error) {
@@ -127,7 +127,7 @@ const WasteRecordDetail = () => {
 
   const saveChanges = async () => {
     try {
-      const response = await apiClient.put(`/api/waste/record/${recordId}`,
+      const response = await apiClient.put(`/api/waste/records/${recordId}`,
           record);
       setRecord(response.data.data); // Update the record with the saved changes
       setEditMode(false);
@@ -141,7 +141,7 @@ const WasteRecordDetail = () => {
   const deleteRecord = async () => {
     if (window.confirm('Are you sure you want to delete this record?')) {
       try {
-        await apiClient.delete(`/api/waste/record/${recordId}`);
+        await apiClient.delete(`/api/waste/records/${recordId}`);
         alert('Record deleted successfully!');
         navigate('/wasteRecord'); // Redirect to waste record page after deletion
       } catch (error) {

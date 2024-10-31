@@ -112,7 +112,7 @@ const WasteRecord = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiClient.get('/api/waste/record');
+        const response = await apiClient.get('/api/waste/records');
         const recordsData = response.data.data || [];
 
         if (Array.isArray(recordsData)) {
