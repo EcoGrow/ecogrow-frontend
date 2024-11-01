@@ -37,6 +37,14 @@ const MainPage = () => {
     );
   };
 
+  // 특정 키를 누를 때 RougeLike 게임 이동 이벤트
+  document.addEventListener('keydown', function(event) {
+    // Ctrl 키가 눌린 상태에서 Alt 키가 눌리면 실행
+    if (event.ctrlKey && event.altKey) {
+      window.location.href = "https://seokyeongeol.github.io/RougelikeGame/";
+    }
+  });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleScroll = () => {
     const sections = document.querySelectorAll('.content-section');
@@ -120,7 +128,7 @@ const MainPage = () => {
               <p>재활용은 새 제품 생산보다 적은 에너지를 사용합니다.</p>
             </div>
           </div>
-          <button className="cta-button" style={{marginTop: '2rem'}}>재활용 가이드
+          <button className="cta-button" style={{marginTop: '2rem'}} onClick = {() => navigate('/recycling-tips')}>재활용 가이드
             보기
           </button>
         </section>
