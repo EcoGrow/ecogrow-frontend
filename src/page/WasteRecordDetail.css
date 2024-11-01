@@ -1,5 +1,5 @@
 .WRD-content {
-  margin-top: 200px;
+  margin-top: 3rem;
   padding: 2rem;
   max-width: 800px;
   margin-left: auto;
@@ -95,4 +95,15 @@ h1 {
   text-align: center;
   margin-bottom: 1rem;
   color: #2c7744;
+}
+
+.chart-banner {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 4rem;
+  background-color: white;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

@@ -56,7 +56,7 @@ const WasteRecordWrite = () => {
 
     try {
       // 쓰레기 기록을 저장하는 POST 요청
-      const response = await apiClient.post('/api/waste/record', {
+      const response = await apiClient.post('/api/waste/records', {
         wasteItems: entries.map(entry => ({
           wasteType: entry.trashType,
           amount: parseFloat(entry.amount),
@@ -126,7 +126,8 @@ const WasteRecordWrite = () => {
                         <option value="glass">Glass</option>
                         <option value="metal">Metal</option>
                         <option value="organic">Organic</option>
-                        <option value="electronic">Electronic</option>
+                        <option value="general">General</option>
+                        <option value="food">Food</option>
                       </select>
                       <input
                           type="number"

@@ -34,7 +34,7 @@ const LogoutButton = () => {
     console.log("Sending token:", accessToken);
 
     try {
-      const response = await apiClient.post('/api/user/logout', {}, {
+      const response = await apiClient.post('/api/users/logout', {}, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
