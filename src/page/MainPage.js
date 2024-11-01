@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import {Link, useNavigate, useLocation} from 'react-router-dom';
 import LogoutButton from '../components/Logout';
 import Modal from '../components/Modal';
 import './MainPage.css';
@@ -7,6 +7,7 @@ import './MainPage.css';
 const MainPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const [message, setMessage] = useState('');
 
   const handleLoginClick = (e) => {
@@ -93,7 +94,7 @@ const MainPage = () => {
                className="ficon"/>
           <h2 className="hero">최신 환경 뉴스</h2>
           <p className="sub-hero">현재 가장 이슈화 되고 있는 최신 환경 뉴스를 확인하세요!</p>
-          <button className="cta-button" onClick={() => navigate('/news')}>뉴스
+          <button className="cta-button" onClick={() => {navigate('/news'); window.location.reload();}}>뉴스
             확인하기
           </button>
         </section>
@@ -104,7 +105,7 @@ const MainPage = () => {
           <h2 className="hero">분리수거의 중요성</h2>
           <p className="sub-hero">올바른 분리수거는 지구를 살리는 첫걸음입니다. 함께 실천해요!</p>
           <button className="cta-button"
-                  onClick={() => navigate('/wasteRecord')}>쓰레기 기록하러 가기
+                  onClick={() => {navigate('/wasteRecord'); window.location.reload();}}>쓰레기 기록하러 가기
           </button>
         </section>
 
@@ -128,7 +129,7 @@ const MainPage = () => {
               <p>재활용은 새 제품 생산보다 적은 에너지를 사용합니다.</p>
             </div>
           </div>
-          <button className="cta-button" style={{marginTop: '2rem'}} onClick = {() => navigate('/recycling-tips')}>재활용 가이드
+          <button className="cta-button" style={{marginTop: '2rem'}} onClick = {() => {navigate('/recycling-tips'); window.location.reload();}}>재활용 가이드
             보기
           </button>
         </section>
