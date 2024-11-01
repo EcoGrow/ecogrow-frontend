@@ -6,6 +6,7 @@ import NewsPage from './page/NewsPage';
 import WasteRecord from './page/WasteRecord';
 import WasteRecordWrite from './page/WasteRecordWrite';
 import WasteRecordDetail from './page/WasteRecordDetail';
+import RecyclingTips from './page/RecyclingTips';
 import KakaoCallback from './page/Auth/KakaoCallback';
 import GoogleCallback from "./page/Auth/GoogleCallback";
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/wasteRecord" element={<WasteRecord/>}/>
           <Route path="/wasteRecordWrite" element={<WasteRecordWrite/>}/>
           <Route path="/wasteRecord/:recordId" element={<WasteRecordDetail />} />
+          <Route path="/recycling-tips" element={<RecyclingTips/>}/>
           <Route path="/login"
                  element={<AuthPage/>}/> {/* 로그인 페이지는 /login 경로로 설정 */}
           <Route path="/signup" element={<AuthPage/>}/>

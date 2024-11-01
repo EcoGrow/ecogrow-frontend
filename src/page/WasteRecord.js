@@ -25,12 +25,14 @@ const WasteRecord = () => {
   const [trashTypeRecyclableData, setTrashTypeRecyclableData] = useState({
     labels: ['Plastic (Recyclable)', 'Paper (Recyclable)', 'Glass (Recyclable)',
       'Metal (Recyclable)', 'Organic (Non-Recyclable)',
-      'Other (Non-Recyclable)'],
+      'General Waste (Non-Recyclable)',
+      'Food Waste (Non-Recyclable)'],
     datasets: [{
       data: [],
       backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
         'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)',
-        'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)'],
+        'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)',
+        'rgba(128, 128, 128, 0.6)'],
       borderWidth: 1
     }]
   });
@@ -54,7 +56,7 @@ const WasteRecord = () => {
   const aggregateDataForCharts = (records) => {
     let weeklyData = [0, 0, 0, 0]; // 매주 낭비되는 양을 합산
     // 폐기물을 특정 재활용 가능 유형과 재활용 불가능 유형으로 분류
-    let recyclableData = [0, 0, 0, 0, 0, 0];
+    let recyclableData = [0, 0, 0, 0, 0, 0, 0];
 
     records.forEach((record) => {
 
@@ -81,8 +83,14 @@ const WasteRecord = () => {
           case 'organic':
             recyclableData[4] += amount; // Non-Recyclable
             break;
-          default:
+          case 'general':
             recyclableData[5] += amount;
+            break;
+          case 'food':
+            recyclableData[6] += amount;
+            break;
+          default:
+            recyclableData[5] += amount; // 정의되지 않으면 general 로 인식
             break;
         }
       });
@@ -104,7 +112,7 @@ const WasteRecord = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiClient.get('/api/waste/record');
+        const response = await apiClient.get('/api/waste/records');
         const recordsData = response.data.data || [];
 
         if (Array.isArray(recordsData)) {

@@ -30,13 +30,15 @@ const WasteRecordDetail = () => {
   };
 
   const [wasteTypeData, setWasteTypeData] = useState({
-    labels: ['Plastic', 'Paper', 'Glass', 'Metal', 'Organic', 'Other'],
+    labels: ['Plastic', 'Paper', 'Glass', 'Metal', 'Organic', 'General Waste',
+      'Food Waste'],
     datasets: [{
       data: [],
       backgroundColor: [
         'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
         'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)',
-        'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)'
+        'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)',
+        'rgba(128, 128, 128, 0.6)'
       ],
       borderWidth: 1
     }]
@@ -60,7 +62,8 @@ const WasteRecordDetail = () => {
       glass: 0,
       metal: 0,
       organic: 0,
-      other: 0
+      general: 0,
+      food: 0
     };
     let recyclableCount = 0;
     let nonRecyclableCount = 0;
@@ -105,7 +108,7 @@ const WasteRecordDetail = () => {
   useEffect(() => {
     const fetchRecord = async () => {
       try {
-        const response = await apiClient.get(`/api/waste/record/${recordId}`);
+        const response = await apiClient.get(`/api/waste/records/${recordId}`);
         setRecord(response.data.data); // Set the waste record data
         aggregateDataForCharts(response.data.data); // Aggregate data for charts
       } catch (error) {
@@ -124,7 +127,7 @@ const WasteRecordDetail = () => {
 
   const saveChanges = async () => {
     try {
-      const response = await apiClient.put(`/api/waste/record/${recordId}`,
+      const response = await apiClient.put(`/api/waste/records/${recordId}`,
           record);
       setRecord(response.data.data); // Update the record with the saved changes
       setEditMode(false);
@@ -138,7 +141,7 @@ const WasteRecordDetail = () => {
   const deleteRecord = async () => {
     if (window.confirm('Are you sure you want to delete this record?')) {
       try {
-        await apiClient.delete(`/api/waste/record/${recordId}`);
+        await apiClient.delete(`/api/waste/records/${recordId}`);
         alert('Record deleted successfully!');
         navigate('/wasteRecord'); // Redirect to waste record page after deletion
       } catch (error) {
