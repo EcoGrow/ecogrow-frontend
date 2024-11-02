@@ -7,9 +7,9 @@
 }
 
 .tips-section {
-  /*opacity: 0;*/
+  opacity: 0;
   transform: translateY(50px);
-  transition: opacity 0.8s, transform 0.8s;
+  transition: opacity 0.5s, transform 0.5s;
 }
 
 .tips-section.visible {
