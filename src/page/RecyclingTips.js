@@ -23,25 +23,25 @@ const RecyclingTips = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  
+
   useEffect(() => {
+    const sections = document.querySelectorAll('.tips-section');
+    const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            } else {
+              entry.target.classList.remove('visible');
+            }
+          });
+        },
+        { threshold: 0.4 } // 섹션의 40%가 뷰포트에 들어오면 감지
+    );
 
-    const checkScroll = () => {
-      const sections = document.querySelectorAll('.tips-section');
-      sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        if (sectionTop < windowHeight * 0.75) {
-          section.classList.add('visible');
-        }
-      });
-    };
-
-    window.addEventListener('scroll', checkScroll);
-    window.addEventListener('load', checkScroll);
+    sections.forEach((section) => observer.observe(section));
     return () => {
-      window.removeEventListener('scroll', checkScroll);
-      window.removeEventListener('load', checkScroll);
+      sections.forEach((section) => observer.unobserve(section));
     };
   }, []);
 
@@ -49,13 +49,13 @@ const RecyclingTips = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/">EcoGrow</Link>
-            <Link to="/news">Environmental News</Link>
-            <Link to="/wasteRecord">Record Trash</Link>
-            <Link to="/recycling-tips">Recycling Tips</Link>
+            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
+            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
+            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
+            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
           </div>
           <div className="header-right">
-            <Link to="/my-page">My Page</Link>
+            <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
             <Link to="/login" onClick={handleLoginClick}>Login</Link>
             <LogoutButton/>
           </div>
@@ -203,7 +203,6 @@ const RecyclingTips = () => {
                 </ul>
               </div>
             </div>
-
           </div>
         </main>
         {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
