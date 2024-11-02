@@ -139,7 +139,7 @@ const MainPage = () => {
                alt="News Icon"
                className="ficon"/>
           <h2 className="hero2">분리수거 게임</h2>
-          <p className="sub-hero2">분리수거 게임을 통해서 인식과 재미를 느껴보세요!</p>
+          <p className="sub-hero2">분리수거 게임을 통해 분리수거의 재미를 느껴보세요!</p>
           <button className="cta-button" onClick={() => window.location.href = "https://seokyeongeol.github.io/RecyclingGame/"}>게임 하러가기</button>
         </section>
         {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
