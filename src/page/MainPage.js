@@ -3,10 +3,12 @@ import {Link, useNavigate, useLocation} from 'react-router-dom';
 import LogoutButton from '../components/Logout';
 import Modal from '../components/Modal';
 import FloatingButton from "./FloatingButton";
+import ChatModal from '../components/ChatModal'
 import './MainPage.css';
 
 const MainPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [message, setMessage] = useState('');
@@ -25,12 +27,16 @@ const MainPage = () => {
   const handleFloatingButtonClick = () => {
     const accessToken = localStorage.getItem('token');
     if(accessToken) {
-      console.log("버튼 클릭!");
+      toggleChatModal(true);
     }
     else {
       setMessage('로그인 후 이용해주세요');
       setIsModalOpen(true);
     }
+  };
+
+  const toggleChatModal = () => {
+    setIsChatOpen(!isChatOpen);
   };
 
   const handleCloseModal = () => {
@@ -156,6 +162,7 @@ const MainPage = () => {
         </section>
         {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
         <FloatingButton onClick={handleFloatingButtonClick} />
+        <ChatModal isOpen={isChatOpen} onClose={toggleChatModal} />
       </div>
   );
 };
