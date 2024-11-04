@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link, useNavigate, useLocation} from 'react-router-dom';
 import LogoutButton from '../components/Logout';
 import Modal from '../components/Modal';
+import FloatingButton from "./FloatingButton";
 import './MainPage.css';
 
 const MainPage = () => {
@@ -18,6 +19,17 @@ const MainPage = () => {
       e.preventDefault(); // 로그인 페이지로 이동 방지
     } else {
       navigate('/login'); // 로그인 페이지로 이동
+    }
+  };
+
+  const handleFloatingButtonClick = () => {
+    const accessToken = localStorage.getItem('token');
+    if(accessToken) {
+      console.log("버튼 클릭!");
+    }
+    else {
+      setMessage('로그인 후 이용해주세요');
+      setIsModalOpen(true);
     }
   };
 
@@ -143,6 +155,7 @@ const MainPage = () => {
           <button className="cta-button" onClick={() => window.location.href = "https://seokyeongeol.github.io/RecyclingGame/"}>게임 하러가기</button>
         </section>
         {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
+        <FloatingButton onClick={handleFloatingButtonClick} />
       </div>
   );
 };
