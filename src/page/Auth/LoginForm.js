@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {login} from '../../api/auth';
 import './LoginForm.css';
@@ -42,9 +42,15 @@ const LoginForm = ({toggleMode, setMessage, setIsMessageVisible}) => {
     try {
       const response = await login(formData);
 
-      if (response.data) {
+      if (response.data.data.accessToken) {
+
+        const token = response.data.data.accessToken;
+        localStorage.setItem('token', token);
+        console.log('Stored token:', localStorage.getItem('token'));
+
         setMessage('로그인 성공!');
-        localStorage.setItem('token', response.data); // JWT 토큰 저장
+        console.log('로그인 응답:', response);
+        localStorage.setItem('token', response.data.data.accessToken); // JWT 토큰 저장
         setIsMessageVisible(true);
         setTimeout(() => {
           setIsMessageVisible(false);

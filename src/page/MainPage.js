@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useNavigate, useLocation} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import LogoutButton from '../components/Logout';
 import Modal from '../components/Modal';
 import FloatingButton from "./FloatingButton";
@@ -10,8 +10,12 @@ const MainPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const [message, setMessage] = useState('');
+
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -95,7 +99,7 @@ const MainPage = () => {
           <div className="header-right">
             <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
             <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton/>
+            <LogoutButton setMessage={showMessage} />
           </div>
         </header>
 
