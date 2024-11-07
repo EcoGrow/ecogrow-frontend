@@ -52,6 +52,17 @@ const WasteRecord = () => {
     setIsModalOpen(false);
   };
 
+  const handleProfileImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('profileImage').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // 시각화를 위한 데이터 집계 함수
   const aggregateDataForCharts = (records) => {
     let weeklyData = [0, 0, 0, 0]; // 매주 낭비되는 양을 합산
@@ -134,71 +145,104 @@ const WasteRecord = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
-            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
-            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
-            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
+            <Link to="/" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/';
+            }}>EcoGrow</Link>
+            <Link to="/news" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/news';
+            }}>Environmental News</Link>
+            <Link to="/wasteRecord" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/wasteRecord';
+            }}>Record Trash</Link>
+            <Link to="/recycling-tips" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/recycling-tips';
+            }}>Recycling Tips</Link>
           </div>
           <div className="header-right">
-            <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
+            <Link to="/my-page" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/my-page';
+            }}>My Page</Link>
             <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton/>
+            <LogoutButton setMessage={setMessage}/>
           </div>
         </header>
 
+        {/* Image & Animation */}
+        <section className="hero-section">
+          <div className="floating-leaves">
+            {[10, 30, 50, 70, 90].map((left, index) => (
+                <svg key={index} className="leaf"
+                     style={{left: `${left}%`, top: `${index * 10 + 15}%`}}
+                     viewBox="0 0 24 24">
+                  <path
+                      d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/>
+                </svg>
+            ))}
+          </div>
+          <div>
+            <h1>Record your Trash</h1>
+            <p>Let’s find out by recording the amount of trash I throw away</p>
+          </div>
+        </section>
+      <div>
         <div className="WR-content">
-          <h1>Record your Trash</h1>
-          <div className="graph-banner">
-            {/*Bar 및 Pie 차트에 전달*/}
-            <div className="graph-container">
-              <Bar data={weeklyMonthlyData} options={{
-                responsive: true,
-                scales: {y: {beginAtZero: true}},
-                plugins: {
-                  title: {
-                    display: true,
-                    text: 'Weekly Waste Emissions'
+            <div className="graph-banner">
+              {/*Bar 및 Pie 차트에 전달*/}
+              <div className="graph-container">
+                <Bar data={weeklyMonthlyData} options={{
+                  responsive: true,
+                  scales: {y: {beginAtZero: true}},
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: 'Weekly Waste Emissions'
+                    }
                   }
-                }
-              }}/>
+                }}/>
+              </div>
+              <div className="graph-container">
+                <Pie data={trashTypeRecyclableData} options={{
+                  responsive: true,
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: 'Waste Types & Recycling Status'
+                    }, legend: {position: 'right'}
+                  }
+                }}/>
+              </div>
             </div>
-            <div className="graph-container">
-              <Pie data={trashTypeRecyclableData} options={{
-                responsive: true,
-                plugins: {
-                  title: {
-                    display: true,
-                    text: 'Waste Types & Recycling Status'
-                  }, legend: {position: 'right'}
-                }
-              }}/>
+
+            <div className="individual-records">
+              {records.length > 0 ? (
+                  records.map((record) => (
+                      <Link to={`/wasteRecord/${record.id}`}
+                            className="record-card" key={record.id}>
+                        <h3>작성자: {record.username}</h3>
+                        <h4>기록 날짜: {record.createdAt}</h4>
+                      </Link>
+                  ))
+              ) : (
+                  <p>No records found.</p>
+              )}
+            </div>
+
+            <div className="record-button-container">
+              <button className="record-button"
+                      onClick={() => navigate('/WasteRecordWrite')}>
+                Record Waste
+              </button>
             </div>
           </div>
-
-          <div className="individual-records">
-            {records.length > 0 ? (
-                records.map((record) => (
-                    <Link to={`/wasteRecord/${record.id}`}
-                          className="record-card" key={record.id}>
-                      <h3>작성자: {record.username}</h3>
-                      <h4>기록 날짜: {record.createdAt}</h4>
-                    </Link>
-                ))
-            ) : (
-                <p>No records found.</p>
-            )}
-          </div>
-
-          <div className="record-button-container">
-            <button className="record-button"
-                    onClick={() => navigate('/WasteRecordWrite')}>
-              Record Waste
-            </button>
-          </div>
+          {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
         </div>
-        {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
       </div>
-  );
+);
 };
 
 export default WasteRecord;

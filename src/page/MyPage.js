@@ -165,7 +165,7 @@ const MyPage = () => {
               window.location.href = '/my-page';
             }}>My Page</Link>
             <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton/>
+            <LogoutButton setMessage={setMessage} />
           </div>
         </header>
 

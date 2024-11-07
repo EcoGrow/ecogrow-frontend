@@ -1,14 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useNavigate, useLocation} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import LogoutButton from '../components/Logout';
 import Modal from '../components/Modal';
+import FloatingButton from "./FloatingButton";
+import ChatModal from '../components/ChatModal'
 import './MainPage.css';
 
 const MainPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const [message, setMessage] = useState('');
+
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -19,6 +26,21 @@ const MainPage = () => {
     } else {
       navigate('/login'); // 로그인 페이지로 이동
     }
+  };
+
+  const handleFloatingButtonClick = () => {
+    const accessToken = localStorage.getItem('token');
+    if(accessToken) {
+      toggleChatModal(true);
+    }
+    else {
+      setMessage('로그인 후 이용해주세요');
+      setIsModalOpen(true);
+    }
+  };
+
+  const toggleChatModal = () => {
+    setIsChatOpen(!isChatOpen);
   };
 
   const handleCloseModal = () => {
@@ -77,7 +99,7 @@ const MainPage = () => {
           <div className="header-right">
             <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
             <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton/>
+            <LogoutButton setMessage={showMessage} />
           </div>
         </header>
 
@@ -143,6 +165,8 @@ const MainPage = () => {
           <button className="cta-button" onClick={() => window.location.href = "https://seokyeongeol.github.io/RecyclingGame/"}>게임 하러가기</button>
         </section>
         {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
+        <FloatingButton onClick={handleFloatingButtonClick} />
+        <ChatModal isOpen={isChatOpen} onClose={toggleChatModal} />
       </div>
   );
 };

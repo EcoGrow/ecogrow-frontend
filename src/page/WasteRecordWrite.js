@@ -95,7 +95,7 @@ const WasteRecordWrite = () => {
           <div className="header-right">
             <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
             <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton/>
+            <LogoutButton setMessage={setMessage} />
           </div>
         </header>
         <div className="WRW-content">
