@@ -76,3 +76,91 @@ body, html {
 .record-button:hover {
   background-color: #1f5a31;
 }
+
+.hero-section {
+  background: linear-gradient(rgba(42, 97, 65, 0.8), rgba(42, 97, 65, 0.9)),
+  url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+  background-size: cover; /* 배경 이미지를 화면에 꽉 차게 설정 */
+  background-position: center; /* 배경 이미지의 중심을 화면 중심으로 설정 */
+  height: 650px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  margin-top: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.floating-leaves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.leaf {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  fill: rgba(255, 255, 255, 0.4);
+  animation: float 15s linear infinite;
+}
+
+.leaf:nth-child(2n) {
+  animation-duration: 17s;
+  animation-delay: -5s;
+}
+
+.leaf:nth-child(3n) {
+  animation-duration: 19s;
+  animation-delay: -7s;
+}
+
+.leaf:nth-child(4n) {
+  animation-duration: 21s;
+  animation-delay: -3s;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(100px, -100px) rotate(120deg);
+  }
+  66% {
+    transform: translate(200px, 0) rotate(240deg);
+  }
+  100% {
+    transform: translate(300px, -50px) rotate(360deg);
+  }
+}
+
+.profile-image-container {
+  position: relative;
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.edit-profile-image {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+}
