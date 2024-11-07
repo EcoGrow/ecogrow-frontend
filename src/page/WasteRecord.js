@@ -12,6 +12,7 @@ const WasteRecord = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [records, setRecords] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
     datasets: [{
@@ -36,6 +37,13 @@ const WasteRecord = () => {
       borderWidth: 1
     }]
   });
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {  // 로그인 상태 체크
+      setIsLoggedIn(true); // 로그인 상태로 설정
+    }
+  }, []);
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -167,8 +175,8 @@ const WasteRecord = () => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>
-            <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton setMessage={setMessage}/>
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={setMessage}/>}
           </div>
         </header>
 

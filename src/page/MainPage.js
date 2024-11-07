@@ -11,6 +11,14 @@ const MainPage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {  // 로그인 상태 체크
+      setIsLoggedIn(true); // 로그인 상태로 설정
+    }
+  }, []);
 
   const showMessage = (msg) => {
     setMessage(msg);
@@ -98,8 +106,8 @@ const MainPage = () => {
           </div>
           <div className="header-right">
             <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
-            <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton setMessage={showMessage} />
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={setMessage} />}
           </div>
         </header>
 
