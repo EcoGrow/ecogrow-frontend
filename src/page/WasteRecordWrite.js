@@ -91,6 +91,11 @@ const WasteRecordWrite = () => {
     }
   };
 
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   return (
       <div>
         <header className="header">
@@ -103,7 +108,7 @@ const WasteRecordWrite = () => {
           <div className="header-right">
             <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={setMessage} />}
+            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
         </header>
         <div className="WRW-content">

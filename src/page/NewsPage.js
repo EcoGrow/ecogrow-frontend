@@ -31,6 +31,12 @@ const NewsPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   // Simulated NEWS API response
   const newsData = [
     {
@@ -87,7 +93,7 @@ const NewsPage = () => {
           <div className="header-right">
             <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={setMessage} />}
+            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
         </header>
 

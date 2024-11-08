@@ -22,6 +22,11 @@ const MyPage = () => {
     }
   }, []);
 
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
     if (accessToken) {
@@ -173,7 +178,7 @@ const MyPage = () => {
               window.location.href = '/my-page';
             }}>My Page</Link>
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={setMessage} />}
+            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
         </header>
 
