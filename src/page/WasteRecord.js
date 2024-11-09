@@ -52,17 +52,6 @@ const WasteRecord = () => {
     setIsModalOpen(false);
   };
 
-  const handleProfileImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        document.getElementById('profileImage').src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   // 시각화를 위한 데이터 집계 함수
   const aggregateDataForCharts = (records) => {
     let weeklyData = [0, 0, 0, 0]; // 매주 낭비되는 양을 합산
