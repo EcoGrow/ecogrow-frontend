@@ -178,6 +178,15 @@ body, html {
   color: var(--primary);
 }
 
+.records-table tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.records-table tbody tr:hover {
+  background-color: #d4e3da;
+  cursor: pointer;
+}
+
 .personalized-tips-container {
   margin: 2rem 0;
   padding: 1.5rem;
