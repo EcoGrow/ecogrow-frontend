@@ -8,6 +8,14 @@ const RecyclingTips = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {  // 로그인 상태 체크
+      setIsLoggedIn(true); // 로그인 상태로 설정
+    }
+  }, []);
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -18,6 +26,11 @@ const RecyclingTips = () => {
     } else {
       navigate('/login'); // 로그인 페이지로 이동
     }
+  };
+
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
   };
 
   const handleProfileImageUpload = (event) => {
@@ -82,8 +95,8 @@ const RecyclingTips = () => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>
-            <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton setMessage={setMessage}/>
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
         </header>
 

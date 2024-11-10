@@ -13,6 +13,7 @@ const WasteRecordDetail = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const {recordId} = useParams(); // Get record ID from URL
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -24,6 +25,13 @@ const WasteRecordDetail = () => {
       navigate('/login');
     }
   };
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {  // 로그인 상태 체크
+      setIsLoggedIn(true); // 로그인 상태로 설정
+    }
+  }, []);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -125,6 +133,11 @@ const WasteRecordDetail = () => {
     setEditMode(!editMode);
   };
 
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   const saveChanges = async () => {
     try {
       const response = await apiClient.put(`/api/waste/records/${recordId}`,
@@ -166,8 +179,8 @@ const WasteRecordDetail = () => {
           </div>
           <div className="header-right">
             <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
-            <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton setMessage={setMessage} />
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
         </header>
 

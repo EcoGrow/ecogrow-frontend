@@ -17,9 +17,22 @@ const MyPage = () => {
   const [message, setMessage] = useState('');
   const [tips, setTips] = useState([]);
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const userId = localStorage.getItem('userId');
   console.log("userId :", userId)
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {  // 로그인 상태 체크
+      setIsLoggedIn(true); // 로그인 상태로 설정
+    }
+  }, []);
+
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -36,7 +49,6 @@ const MyPage = () => {
     setIsModalOpen(false);
   };
 
-  // Fetch user-specific trash records from the backend
   useEffect(() => {
     const fetchWasteRecords = async () => {
       try {
@@ -231,8 +243,8 @@ const MyPage = () => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>
-            <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton setMessage={setMessage}/>
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
         </header>
 

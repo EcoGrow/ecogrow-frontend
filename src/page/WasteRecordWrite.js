@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './WasteRecordWrite.css';
 import {Link, useNavigate} from "react-router-dom";
 import LogoutButton from "../components/Logout";
@@ -11,6 +11,7 @@ const WasteRecordWrite = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -22,6 +23,13 @@ const WasteRecordWrite = () => {
       navigate('/login');
     }
   };
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {  // 로그인 상태 체크
+      setIsLoggedIn(true); // 로그인 상태로 설정
+    }
+  }, []);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -83,6 +91,11 @@ const WasteRecordWrite = () => {
     }
   };
 
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   return (
       <div>
         <header className="header">
@@ -94,8 +107,8 @@ const WasteRecordWrite = () => {
           </div>
           <div className="header-right">
             <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
-            <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton setMessage={setMessage} />
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
         </header>
         <div className="WRW-content">

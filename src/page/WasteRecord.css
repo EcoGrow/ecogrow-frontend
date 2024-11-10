@@ -37,7 +37,7 @@ body, html {
 
 .record-card {
   width: 300px;
-  height: 200px;
+  height: 300px;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -48,8 +48,29 @@ body, html {
   justify-content: space-between;
 }
 
+.card-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.card-header h3,
+.card-header h4 {
+  margin: 0;
+}
+
+.card-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-image img {
+  width: 200px; /* 이미지 크기 조정 */
+  height: 200px;
+}
+
 .record-card h3 {
-  margin-top: 0;
+  margin-top: 10px;
   color: #2c7744;
 }
 

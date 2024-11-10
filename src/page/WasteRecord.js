@@ -12,6 +12,7 @@ const WasteRecord = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [records, setRecords] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
     datasets: [{
@@ -37,6 +38,13 @@ const WasteRecord = () => {
     }]
   });
 
+  useEffect(() => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {  // 로그인 상태 체크
+      setIsLoggedIn(true); // 로그인 상태로 설정
+    }
+  }, []);
+
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
     if (accessToken) {
@@ -50,6 +58,22 @@ const WasteRecord = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleProfileImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('profileImage').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
   };
 
   // 시각화를 위한 데이터 집계 함수
@@ -156,8 +180,8 @@ const WasteRecord = () => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>
-            <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton setMessage={setMessage}/>
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
 
@@ -212,8 +236,13 @@ const WasteRecord = () => {
                   records.map((record) => (
                       <Link to={`/wasteRecord/${record.id}`}
                             className="record-card" key={record.id}>
-                        <h3>작성자: {record.username}</h3>
-                        <h4>기록 날짜: {record.createdAt}</h4>
+                        <div className="card-header">
+                          <h3>작성자: {record.username}</h3>
+                          <h4>기록 날짜: {record.createdAt}</h4>
+                        </div>
+                        <div className="card-image">
+                          <img src ="https://cdn-icons-png.flaticon.com/512/5265/5265879.png" alt="Trash" />
+                        </div>
                       </Link>
                   ))
               ) : (
