@@ -179,7 +179,7 @@ private List<WasteItem> wasteItems = new ArrayList<>();
 
 </details>
 <details>
-  <summary>특정 사용자에 대한 프로필 조회</summary>
+  <summary>Spring Boot의 모호한 핸들러 매핑</summary>
 
 <br>
 
