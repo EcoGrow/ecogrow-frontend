@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
 
-const LogoutButton = () => {
+const LogoutButton = ({ setMessage })  => {
   const navigate = useNavigate();
 
   const isTokenValid = (token) => {
@@ -27,6 +27,7 @@ const LogoutButton = () => {
     if (!isTokenValid(accessToken)) {
       console.warn("Invalid or expired token. Logging out locally.");
       localStorage.removeItem('token');
+      setMessage('로그아웃 성공!');
       navigate('/');
       return;
     }
@@ -34,12 +35,13 @@ const LogoutButton = () => {
     console.log("Sending token:", accessToken);
 
     try {
-      const response = await apiClient.post('/api/user/logout', {}, {
+      const response = await apiClient.post('/api/users/logout', {}, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       if (response.status === 200) {
         localStorage.removeItem('token');
+        setMessage('로그아웃 성공!');
         navigate('/');
       } else {
         console.error("Logout failed with status:", response.status);

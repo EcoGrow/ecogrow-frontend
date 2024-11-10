@@ -2,12 +2,20 @@ import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import LogoutButton from '../components/Logout';
 import Modal from '../components/Modal';
+import FloatingButton from "./FloatingButton";
+import ChatModal from '../components/ChatModal'
 import './MainPage.css';
 
 const MainPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
+
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -18,6 +26,21 @@ const MainPage = () => {
     } else {
       navigate('/login'); // 로그인 페이지로 이동
     }
+  };
+
+  const handleFloatingButtonClick = () => {
+    const accessToken = localStorage.getItem('token');
+    if(accessToken) {
+      toggleChatModal(true);
+    }
+    else {
+      setMessage('로그인 후 이용해주세요');
+      setIsModalOpen(true);
+    }
+  };
+
+  const toggleChatModal = () => {
+    setIsChatOpen(!isChatOpen);
   };
 
   const handleCloseModal = () => {
@@ -36,6 +59,14 @@ const MainPage = () => {
             || document.documentElement.clientWidth)
     );
   };
+
+  // 특정 키를 누를 때 RougeLike 게임 이동 이벤트
+  document.addEventListener('keydown', function(event) {
+    // Ctrl 키가 눌린 상태에서 Alt 키가 눌리면 실행
+    if (event.ctrlKey && event.altKey) {
+      window.location.href = "https://seokyeongeol.github.io/RougelikeGame/";
+    }
+  });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleScroll = () => {
@@ -60,15 +91,15 @@ const MainPage = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/">EcoGrow</Link>
-            <Link to="/news">Environmental News</Link>
-            <Link to="/wasteRecord">Record Trash</Link>
-            <Link to="/recycling-tips">Recycling Tips</Link>
+            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
+            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
+            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
+            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
           </div>
           <div className="header-right">
-            <Link to="/my-page">My Page</Link>
+            <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
             <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton/>
+            <LogoutButton setMessage={showMessage} />
           </div>
         </header>
 
@@ -85,7 +116,7 @@ const MainPage = () => {
                className="ficon"/>
           <h2 className="hero">최신 환경 뉴스</h2>
           <p className="sub-hero">현재 가장 이슈화 되고 있는 최신 환경 뉴스를 확인하세요!</p>
-          <button className="cta-button" onClick={() => navigate('/news')}>뉴스
+          <button className="cta-button" onClick={() => {navigate('/news'); window.location.reload();}}>뉴스
             확인하기
           </button>
         </section>
@@ -96,7 +127,7 @@ const MainPage = () => {
           <h2 className="hero">분리수거의 중요성</h2>
           <p className="sub-hero">올바른 분리수거는 지구를 살리는 첫걸음입니다. 함께 실천해요!</p>
           <button className="cta-button"
-                  onClick={() => navigate('/wasteRecord')}>쓰레기 기록하러 가기
+                  onClick={() => {navigate('/wasteRecord'); window.location.reload();}}>쓰레기 기록하러 가기
           </button>
         </section>
 
@@ -120,7 +151,7 @@ const MainPage = () => {
               <p>재활용은 새 제품 생산보다 적은 에너지를 사용합니다.</p>
             </div>
           </div>
-          <button className="cta-button" style={{marginTop: '2rem'}}>재활용 가이드
+          <button className="cta-button" style={{marginTop: '2rem'}} onClick = {() => {navigate('/recycling-tips'); window.location.reload();}}>재활용 가이드
             보기
           </button>
         </section>
@@ -130,10 +161,12 @@ const MainPage = () => {
                alt="News Icon"
                className="ficon"/>
           <h2 className="hero2">분리수거 게임</h2>
-          <p className="sub-hero2">분리수거 게임을 통해서 인식과 재미를 느껴보세요!</p>
-          <button className="cta-button">게임 하러가기</button>
+          <p className="sub-hero2">분리수거 게임을 통해 분리수거의 재미를 느껴보세요!</p>
+          <button className="cta-button" onClick={() => window.location.href = "https://seokyeongeol.github.io/RecyclingGame/"}>게임 하러가기</button>
         </section>
         {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
+        <FloatingButton onClick={handleFloatingButtonClick} />
+        <ChatModal isOpen={isChatOpen} onClose={toggleChatModal} />
       </div>
   );
 };
