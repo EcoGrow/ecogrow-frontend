@@ -28,7 +28,7 @@
 <br />
 
 ## 🧑‍💻 팀 역할
-| 역할 | 리더 김경민| 팀원 서찬영 | 팀원 석연걸 |
+| 역할 | 김경민| 서찬영 | 석연걸 |
 |:---:|:---:|:---:|:---:|
 | 담당 기능 | <ul><li>사용자 인증</li><li>소셜 로그인(Kakao, Google)</li><li>관리자 기능</li><li>쓰레기 기록 CRUD</li><li>맞춤형 쓰레기 감소 TIP</li><li>제로웨이스트 제품 추천 기능</li><li>Front</li><li>AOP</li><li>배포</li>|<ul><li>회원가입 & 로그인 페이지</li><li>프로필</li><li>커뮤니티 기능<li></li>뉴스 API</li><li>실시간 채팅</li> |<ul><li>2D 이스터에그 게임</li><li>3D 분리수거 게임</li><li>Front</li>|
 
@@ -95,7 +95,6 @@ https://docs.google.com/document/d/1TwYGpixl2F0x2VR9XR31Se2Bs0SiQ6iTBjHi4AA-Hdw/
 
 <div>
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Docker.png?raw=true" width="80">
-<img src="https://github.com/user-attachments/assets/c305b269-2996-4316-9d06-5a99b60dc829" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/AWSEC2.png?raw=true" width="80">
 </div>
 
