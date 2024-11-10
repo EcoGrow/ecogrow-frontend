@@ -103,7 +103,6 @@ const MyPage = () => {
       metal: 0,
       organic: 0,
       general: 0,
-      food: 0
     };
     let recyclable = 0;
     let nonRecyclable = 0;

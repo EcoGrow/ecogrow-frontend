@@ -140,7 +140,6 @@ const WasteRecordWrite = () => {
                         <option value="metal">Metal</option>
                         <option value="organic">Organic</option>
                         <option value="general">General</option>
-                        <option value="food">Food</option>
                       </select>
                       <input
                           type="number"

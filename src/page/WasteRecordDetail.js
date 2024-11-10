@@ -71,7 +71,6 @@ const WasteRecordDetail = () => {
       metal: 0,
       organic: 0,
       general: 0,
-      food: 0
     };
     let recyclableCount = 0;
     let nonRecyclableCount = 0;
@@ -269,7 +268,6 @@ const WasteRecordDetail = () => {
                           >
                             <option value="kg">Kilograms (kg)</option>
                             <option value="g">Grams (g)</option>
-                            <option value="l">Liters (L)</option>
                             <option value="pieces">Pieces</option>
                           </select>
                         </div>
