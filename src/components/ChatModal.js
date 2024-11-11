@@ -31,7 +31,7 @@ const ChatModal = ({ isOpen, onClose }) => {
                     &times;
                 </button>
                 <div className="chat-content">
-                    <h2>실시간 채팅</h2>
+                    <h2 className="chat-title">실시간 채팅</h2>
                     <div className="messages">
                         {messages.map((msg, index) => (
                             <div key={index} className={`message ${msg.type}`}>

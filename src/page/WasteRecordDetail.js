@@ -133,6 +133,11 @@ const WasteRecordDetail = () => {
     setEditMode(!editMode);
   };
 
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   const saveChanges = async () => {
     try {
       const response = await apiClient.put(`/api/waste/records/${recordId}`,
@@ -179,7 +184,7 @@ const WasteRecordDetail = () => {
               window.location.href = '/my-page';
             }}>My Page</Link>}
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={setMessage} />}
+            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
         </header>
 

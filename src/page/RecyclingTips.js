@@ -28,6 +28,11 @@ const RecyclingTips = () => {
     }
   };
 
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   const handleProfileImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -92,7 +97,7 @@ const RecyclingTips = () => {
               window.location.href = '/my-page';
             }}>My Page</Link>}
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={setMessage} />}
+            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
         </header>
 

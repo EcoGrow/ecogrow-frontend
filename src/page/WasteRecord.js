@@ -71,6 +71,11 @@ const WasteRecord = () => {
     }
   };
 
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   // 시각화를 위한 데이터 집계 함수
   const aggregateDataForCharts = (records) => {
     let weeklyData = [0, 0, 0, 0]; // 매주 낭비되는 양을 합산
@@ -177,7 +182,7 @@ const WasteRecord = () => {
               window.location.href = '/my-page';
             }}>My Page</Link>}
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={setMessage}/>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
 
@@ -232,8 +237,13 @@ const WasteRecord = () => {
                   records.map((record) => (
                       <Link to={`/wasteRecord/${record.id}`}
                             className="record-card" key={record.id}>
-                        <h3>작성자: {record.username}</h3>
-                        <h4>기록 날짜: {record.createdAt}</h4>
+                        <div className="card-header">
+                          <h3>작성자: {record.username}</h3>
+                          <h4>기록 날짜: {record.createdAt}</h4>
+                        </div>
+                        <div className="card-image">
+                          <img src ="https://cdn-icons-png.flaticon.com/512/5265/5265879.png" alt="Trash" />
+                        </div>
                       </Link>
                   ))
               ) : (
