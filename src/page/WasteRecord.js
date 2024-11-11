@@ -239,10 +239,14 @@ const WasteRecord = () => {
                             className="record-card" key={record.id}>
                         <div className="card-header">
                           <h3>작성자: {record.username}</h3>
-                          <h4>기록 날짜: {record.createdAt}</h4>
+                          <h4>기록
+                            날짜: {new Date(record.createdAt).toLocaleDateString()} {new Date(record.createdAt).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}</h4>
                         </div>
                         <div className="card-image">
-                          <img src ="https://cdn-icons-png.flaticon.com/512/5265/5265879.png" alt="Trash" />
+                          <img src="https://cdn-icons-png.flaticon.com/512/5265/5265879.png" alt="Trash" />
                         </div>
                       </Link>
                   ))
