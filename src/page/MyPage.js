@@ -343,7 +343,10 @@ const MyPage = () => {
               {entries.map((entry, index) => (
                   <tr key={index} onClick={() => viewRecordDetails(entry.id)}
                       style={{cursor: 'pointer'}}>
-                    <td>{entry.date || entry.createdAt || "No Date"}</td>
+                    <td>{entry.date || new Date(entry.createdAt).toLocaleDateString()} {new Date(entry.createdAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    }) || "No Date"}</td>
                     <td>{entry.trashType || entry.wasteItems?.[0]?.wasteType
                         || "No Type"}</td>
                     <td>{entry.amount || entry.wasteItems?.[0]?.amount
