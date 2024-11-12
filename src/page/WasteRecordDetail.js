@@ -268,7 +268,6 @@ const WasteRecordDetail = () => {
                           >
                             <option value="kg">Kilograms (kg)</option>
                             <option value="g">Grams (g)</option>
-                            <option value="pieces">Pieces</option>
                           </select>
                         </div>
                     ))
