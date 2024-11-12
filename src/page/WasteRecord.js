@@ -58,17 +58,6 @@ const WasteRecord = () => {
     setIsModalOpen(false);
   };
 
-  const handleProfileImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        document.getElementById('profileImage').src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const showMessage = (msg) => {
     setMessage(msg);
     setIsModalOpen(true);
