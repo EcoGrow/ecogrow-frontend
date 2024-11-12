@@ -73,8 +73,13 @@ const MyPage = () => {
     const fetchWasteReductionTips = async () => {
       try {
         const response = await apiClient.get(`/api/waste/tips/users/${userId}`);
+
+        console.log('API 응답:', response. data);
+
         const tipsData = response.data.data || [];
         setTips(tipsData); // Store the fetched tips data
+
+        console.log('팁 데이터 구조:', tipsData);
       } catch (error) {
         console.error('Error fetching waste reduction tips:', error);
       }
@@ -315,7 +320,7 @@ const MyPage = () => {
             <div id="dynamicTips" className="tip-content">
               {tips.length > 0 ? (
                   tips.map((tip, index) => (
-                      <p key={index}>{tip.message}</p>
+                      <p key={index}>{tip.tips}</p>
                   ))
               ) : (
                   <p>No personalized tips available.</p>
