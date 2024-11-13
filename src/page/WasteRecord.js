@@ -13,6 +13,12 @@ const WasteRecord = () => {
   const [message, setMessage] = useState('');
   const [records, setRecords] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [filteredRecords, setFilteredRecords] = useState([]);
+  const [sortOption, setSortOption] = useState([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const recordsPerPage = 12; // 페이지당 표시할 레코드 수
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
     datasets: [{
@@ -58,6 +64,38 @@ const WasteRecord = () => {
     setIsModalOpen(false);
   };
 
+  const handleSortChange = (e) => setSortOption(e.target.value);
+  const handleDateChange = (setter) => (e) => setter(e.target.value);
+
+  const filterRecords = () => {
+    let filteredRecords = [...records];
+    if (startDate && endDate) {
+      filteredRecords = filteredRecords.filter(record => {
+        const recordDate = new Date(record.createdAt);
+        return recordDate >= new Date(startDate) && recordDate <= new Date(endDate);
+      });
+    }
+    if (sortOption === 'likes') {
+      filteredRecords.sort((a, b) => b.likes - a.likes);
+    }
+    else if (sortOption === 'newest') {
+      filteredRecords.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+    else if (sortOption === 'oldest') {
+      filteredRecords.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    }
+    setFilteredRecords(filteredRecords);
+  };
+
+  /* 검색 필터 */
+  const handleSearchClick = () => {
+    filterRecords(); // 검색된 결과를 상태에 저장
+  };
+
+  useEffect(() => {
+    setFilteredRecords(records); // 초기 렌더링 시 전체 기록을 보여줍니다.
+  }, [records]);
+
   const handleProfileImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -81,7 +119,6 @@ const WasteRecord = () => {
     let recyclableData = [0, 0, 0, 0, 0, 0, 0];
 
     records.forEach((record) => {
-
       const weekIndex = new Date(record.createdAt).getDate() % 4;
 
       record.wasteItems.forEach((item) => {
@@ -136,6 +173,7 @@ const WasteRecord = () => {
 
         if (Array.isArray(recordsData)) {
           setRecords(recordsData);
+          setFilteredRecords(recordsData);
           aggregateDataForCharts(recordsData);
         } else {
           console.error('Unexpected response structure:', recordsData);
@@ -145,9 +183,25 @@ const WasteRecord = () => {
         console.error('Error fetching waste records:', error);
       }
     };
-
     fetchData();
   }, []);
+
+  // 페이지네이션을 위한 현재 페이지에 해당하는 레코드
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = filteredRecords.slice(indexOfFirstRecord, indexOfLastRecord);
+
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(filteredRecords.length / recordsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
       <div>
@@ -198,8 +252,9 @@ const WasteRecord = () => {
             <p>Let’s find out by recording the amount of trash I throw away</p>
           </div>
         </section>
-      <div>
-        <div className="WR-content">
+
+        <div>
+          <div className="WR-content">
             <div className="graph-banner">
               {/*Bar 및 Pie 차트에 전달*/}
               <div className="graph-container">
@@ -227,9 +282,30 @@ const WasteRecord = () => {
               </div>
             </div>
 
+            {/* Search filter */}
+            <section className="filter-section">
+              <label className="sort-label">
+                정렬 기준 :
+                <select value={sortOption} onChange={handleSortChange}>
+                  <option value="newest">최신순</option>
+                  <option value="oldest">오래된 순</option>
+                  <option value="likes">좋아요 많은 순</option>
+                </select>
+              </label>
+              <label className="date-label">
+                날짜 검색 :
+                <div className="date-inputs">
+                  <input type="date" value={startDate} onChange={handleDateChange(setStartDate)}/>
+                  <span className="date-separator">~</span>
+                  <input type="date" value={endDate} onChange={handleDateChange(setEndDate)}/>
+                </div>
+              </label>
+              <button className="search-button" onClick={handleSearchClick}>검색 🔍</button>
+            </section>
+
             <div className="individual-records">
-              {records.length > 0 ? (
-                  records.map((record) => (
+              {currentRecords.length > 0 ? (
+                  currentRecords.map((record) => (
                       <Link to={`/wasteRecord/${record.id}`}
                             className="record-card" key={record.id}>
                         <div className="card-header">
@@ -241,13 +317,23 @@ const WasteRecord = () => {
                             })}</h4>
                         </div>
                         <div className="card-image">
-                          <img src="https://cdn-icons-png.flaticon.com/512/5265/5265879.png" alt="Trash" />
+                          <img src="https://cdn-icons-png.flaticon.com/512/5265/5265879.png" alt="Trash"/>
                         </div>
                       </Link>
                   ))
               ) : (
                   <p>No records found.</p>
               )}
+            </div>
+
+            {/* 페이지네이션 버튼 */}
+            <div className="pagination-buttons">
+              <button onClick={handlePrevPage} disabled={currentPage === 1}>
+                이전
+              </button>
+              <button onClick={handleNextPage} disabled={currentPage === Math.ceil(filteredRecords.length / recordsPerPage)}>
+                다음
+              </button>
             </div>
 
             <div className="record-button-container">
@@ -260,7 +346,7 @@ const WasteRecord = () => {
           {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
         </div>
       </div>
-);
+  );
 };
 
 export default WasteRecord;
