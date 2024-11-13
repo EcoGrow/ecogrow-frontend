@@ -304,7 +304,7 @@ const WasteRecord = () => {
                               {hour: '2-digit', minute: '2-digit'})}</h4>
                         </div>
                         <div className="card-image">
-                          <img src="https://cdn-icons-png.flaticon.com/512/5265/5265879.png" alt="Trash"/>
+                          <img src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/refs/heads/feat/FeatureModification/Trash.png" alt="Trash"/>
                         </div>
                       </Link>
                   ))
