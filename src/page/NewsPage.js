@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import LogoutButton from '../components/Logout';
-import Modal from '../components/Modal';
 import './NewsPage.css';
 import axios from 'axios';
 
 const NewsPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const [message, setMessage] = useState('');
+  const [setMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [newsData, setNewsData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const newsPerPage = 9;
 
   useEffect(() => {
@@ -34,44 +32,31 @@ const NewsPage = () => {
     }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
   const showMessage = (msg) => {
     setMessage(msg);
     setIsModalOpen(true);
   };
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await axios.get('/api/news/search');
-        const cleanedData = response.data.map((item) => {
-          return {
-            ...item,
-            // HTML 엔티티를 디코딩하여 문자열로 변환
-            title: new DOMParser().parseFromString(item.title, 'text/html').documentElement.textContent,
-            description: new DOMParser().parseFromString(item.description, 'text/html').documentElement.textContent,
-          };
-        });
-        setNewsData(cleanedData);
-      } catch (err) {
-        setError("뉴스 데이터를 불러오는 데 실패했습니다.");
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchNews();
-  }, []);
+  const fetchNews = async (page) => {
+    try {
+      const response = await axios.get('/api/news/search', {
+        params: {page: page - 1, size: newsPerPage}
+      });
+      const data = response.data;
 
-  const indexOfLastNews = currentPage * newsPerPage; // 현재 페이지에서 마지막 뉴스의 인덱스
-  const indexOfFirstNews = indexOfLastNews - newsPerPage; // 첫 번째 뉴스의 인덱스
-  const currentNews = newsData.slice(indexOfFirstNews, indexOfLastNews); // 현재 페이지에 해당하는 뉴스만 슬라이싱
+      setNewsData(data.content);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("Error fetching news data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNews(currentPage);
+  }, [currentPage]);
 
   const handleNextPage = () => {
-    if (currentPage < Math.ceil(newsData.length / newsPerPage)) {
+    if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -81,9 +66,6 @@ const NewsPage = () => {
       setCurrentPage(currentPage - 1);
     }
   };
-
-  if (isLoading) return <p>로딩 중...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
       <div className="news-page">
@@ -107,12 +89,14 @@ const NewsPage = () => {
             }}>Recycling Tips</Link>
           </div>
           <div className="header-right">
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
+              Page</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            {!isLoggedIn && <Link to="/login"
+                                  onClick={handleLoginClick}>Login</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -131,15 +115,17 @@ const NewsPage = () => {
           </div>
           <div>
             <h1>Environmental News</h1>
-            <p>Let’s find out about current environmental issues through environmental news</p>
+            <p>Let’s find out about current environmental issues through
+              environmental news</p>
           </div>
         </section>
 
         <main className="news-content">
           <div className="news-grid">
-            {currentNews.map((news) => (
+            {newsData.map((news) => (
                 <div className="news-item" key={news.cnt}>
-                  <a href={news.link} target="_blank" rel="noopener noreferrer" style={{textDecoration: 'none'}}>
+                  <a href={news.link} target="_blank" rel="noopener noreferrer"
+                     style={{textDecoration: 'none'}}>
                     <img
                         src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/439baf3541f9bf9f0435db0e6c4e7e31b8d1a721/public/ecogrow.png"
                         alt="News Image"
@@ -149,7 +135,8 @@ const NewsPage = () => {
                           margin: '5px 0'
                         }}
                     />
-                    <h2 className="news-title" style={{color: '#333'}}>{news.title}</h2>
+                    <h2 className="news-title"
+                        style={{color: '#333'}}>{news.title}</h2>
                     <p className="news-description">{news.description}</p>
                   </a>
                 </div>
@@ -159,12 +146,10 @@ const NewsPage = () => {
 
         {/* 페이지네이션 버튼 */}
         <div className="pagination-buttons">
-          <button onClick={handlePrevPage} disabled={currentPage === 1}>
-            이전
+          <button onClick={handlePrevPage} disabled={currentPage === 1}>이전
           </button>
           <button onClick={handleNextPage}
-                  disabled={currentPage === Math.ceil(newsData.length / newsPerPage)}>
-            다음
+                  disabled={currentPage === totalPages}>다음
           </button>
         </div>
       </div>
