@@ -1,14 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import LogoutButton from '../components/Logout';
 import Modal from '../components/Modal';
 import './NewsPage.css';
+import axios from 'axios';
 
 const NewsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [newsData, setNewsData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const newsPerPage = 9;
 
   useEffect(() => {
     const accessToken = localStorage.getItem('token');
@@ -37,58 +43,68 @@ const NewsPage = () => {
     setIsModalOpen(true);
   };
 
-  // Simulated NEWS API response
-  const newsData = [
-    {
-      title: '북극이 최근 자주 보도되는 이유',
-      date: '2024년 10월 13일',
-      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
-    },
-    {
-      title: "친환경 자연사 박물관이 공개한 '팬더곰' 흔적 첫 발견",
-      date: '2024년 10월 9일',
-      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
-    },
-    {
-      title: '전 세계 고래 집약 공개년 사상 최악의 이유',
-      date: '2024년 10월 5일',
-      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
-    },
-    {
-      title: '충주, 마산자연재해 예경시설 거 준공식 개최',
-      date: '2024년 10월 1일',
-      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
-    },
-    {
-      title: "구글, 마이크로소프트 '탄소 제거' 계약 체결",
-      date: '2024년 9월 27일',
-      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
-    },
-    {
-      title: '환경부, 전국 상수도 오염물질 검사결과 발표',
-      date: '2024년 9월 23일',
-      imageUrl: '/a/fde76069-8989-4f65-88f9-377885851f3f',
-    },
-  ];
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await axios.get('/api/news/search');
+        const cleanedData = response.data.map((item) => {
+          return {
+            ...item,
+            // HTML 엔티티를 디코딩하여 문자열로 변환
+            title: new DOMParser().parseFromString(item.title, 'text/html').documentElement.textContent,
+            description: new DOMParser().parseFromString(item.description, 'text/html').documentElement.textContent,
+          };
+        });
+        setNewsData(cleanedData);
+      } catch (err) {
+        setError("뉴스 데이터를 불러오는 데 실패했습니다.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchNews();
+  }, []);
 
-  const createNewsItem = (news) => (
-      <div className="news-item" key={news.title}>
-        <img src={news.imageUrl} alt={news.title} className="news-image"/>
-        <div className="news-content">
-          <h2 className="news-title">{news.title}</h2>
-          <p className="news-date">{news.date}</p>
-        </div>
-      </div>
-  );
+  const indexOfLastNews = currentPage * newsPerPage; // 현재 페이지에서 마지막 뉴스의 인덱스
+  const indexOfFirstNews = indexOfLastNews - newsPerPage; // 첫 번째 뉴스의 인덱스
+  const currentNews = newsData.slice(indexOfFirstNews, indexOfLastNews); // 현재 페이지에 해당하는 뉴스만 슬라이싱
+
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(newsData.length / newsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  if (isLoading) return <p>로딩 중...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
-      <div>
+      <div className="news-page">
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
-            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
-            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
-            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
+            <Link to="/" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/';
+            }}>EcoGrow</Link>
+            <Link to="/news" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/news';
+            }}>Environmental News</Link>
+            <Link to="/wasteRecord" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/wasteRecord';
+            }}>Record Trash</Link>
+            <Link to="/recycling-tips" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/recycling-tips';
+            }}>Recycling Tips</Link>
           </div>
           <div className="header-right">
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
@@ -97,7 +113,7 @@ const NewsPage = () => {
               window.location.href = '/my-page';
             }}>My Page</Link>}
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
 
@@ -121,10 +137,36 @@ const NewsPage = () => {
 
         <main className="news-content">
           <div className="news-grid">
-            {newsData.map((news) => createNewsItem(news))}
+            {currentNews.map((news) => (
+                <div className="news-item" key={news.cnt}>
+                  <a href={news.link} target="_blank" rel="noopener noreferrer" style={{textDecoration: 'none'}}>
+                    <img
+                        src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/439baf3541f9bf9f0435db0e6c4e7e31b8d1a721/public/ecogrow.png"
+                        alt="News Image"
+                        style={{
+                          width: '50px',
+                          height: 'auto',
+                          margin: '5px 0'
+                        }}
+                    />
+                    <h2 className="news-title" style={{color: '#333'}}>{news.title}</h2>
+                    <p className="news-description">{news.description}</p>
+                  </a>
+                </div>
+            ))}
           </div>
         </main>
-        {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
+
+        {/* 페이지네이션 버튼 */}
+        <div className="pagination-buttons">
+          <button onClick={handlePrevPage} disabled={currentPage === 1}>
+            이전
+          </button>
+          <button onClick={handleNextPage}
+                  disabled={currentPage === Math.ceil(newsData.length / newsPerPage)}>
+            다음
+          </button>
+        </div>
       </div>
   );
 };
