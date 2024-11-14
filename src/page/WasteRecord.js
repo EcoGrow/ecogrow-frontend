@@ -6,6 +6,7 @@ import LogoutButton from '../components/Logout';
 import {Link, useNavigate} from 'react-router-dom';
 import Modal from '../components/Modal';
 import {apiClient} from '../api/client';
+import { useEditable } from './EditableContext';
 
 const WasteRecord = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const WasteRecord = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 8;
   const [totalPages, setTotalPages] = useState(1);
+  const { editableStates } = useEditable();   // 수정됐는지 확인
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
     datasets: [{
@@ -301,7 +303,9 @@ const WasteRecord = () => {
                           <h4>기록 날짜: {new Date(
                               record.createdAt).toLocaleDateString()} {new Date(
                               record.createdAt).toLocaleTimeString([],
-                              {hour: '2-digit', minute: '2-digit'})}</h4>
+                              {hour: '2-digit', minute: '2-digit'})}
+                            {editableStates[record.id] && <span className="edited-label">(수정됨)</span>}
+                          </h4>
                         </div>
                         <div className="card-image">
                           <img src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/refs/heads/feat/FeatureModification/Trash.png" alt="Trash"/>

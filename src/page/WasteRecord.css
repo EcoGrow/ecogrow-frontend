@@ -276,3 +276,9 @@ body, html {
 .pagination-buttons button:hover:not(:disabled) {
   background-color: #1f5a31;
 }
+
+.edited-label {
+  color: red;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
