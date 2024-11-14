@@ -6,6 +6,7 @@ import LogoutButton from '../components/Logout';
 import {Link, useNavigate} from 'react-router-dom';
 import Modal from '../components/Modal';
 import {apiClient} from '../api/client';
+import { useEditable } from './EditableContext';
 
 const WasteRecord = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const WasteRecord = () => {
   const [endDate, setEndDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const recordsPerPage = 12; // 페이지당 표시할 레코드 수
+  const { editableStates } = useEditable();   // 수정됐는지 확인
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
     datasets: [{
@@ -313,11 +315,16 @@ const WasteRecord = () => {
                           <h4>기록
                             날짜: {new Date(record.createdAt).toLocaleDateString()} {new Date(record.createdAt).toLocaleTimeString([], {
                               hour: '2-digit',
-                              minute: '2-digit'
-                            })}</h4>
+                              minute: '2-digit',
+                              second: '2-digit'
+                            })}
+                            {editableStates[record.id] && <span className="edited-label">(수정됨)</span>}
+                          </h4>
                         </div>
                         <div className="card-image">
-                          <img src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/refs/heads/feat/FeatureModification/Trash.png" alt="Trash"/>
+                          <img
+                              src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/refs/heads/feat/FeatureModification/Trash.png"
+                              alt="Trash"/>
                         </div>
                       </Link>
                   ))
@@ -331,7 +338,8 @@ const WasteRecord = () => {
               <button onClick={handlePrevPage} disabled={currentPage === 1}>
                 이전
               </button>
-              <button onClick={handleNextPage} disabled={currentPage === Math.ceil(filteredRecords.length / recordsPerPage)}>
+              <button onClick={handleNextPage}
+                      disabled={currentPage === Math.ceil(filteredRecords.length / recordsPerPage)}>
                 다음
               </button>
             </div>
