@@ -103,7 +103,7 @@ body, html {
   url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
   background-size: cover; /* 배경 이미지를 화면에 꽉 차게 설정 */
   background-position: center; /* 배경 이미지의 중심을 화면 중심으로 설정 */
-  height: 650px;
+  height: 450px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -254,7 +254,8 @@ body, html {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-bottom: 1rem;
+
 }
 
 .pagination-buttons button {
@@ -275,4 +276,10 @@ body, html {
 
 .pagination-buttons button:hover:not(:disabled) {
   background-color: #1f5a31;
+}
+
+.edited-label {
+  color: red;
+  font-size: 0.9em;
+  margin-left: 10px;
 }
