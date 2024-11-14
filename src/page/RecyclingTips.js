@@ -91,10 +91,11 @@ const RecyclingTips = () => {
             }}>Recycling Tips</Link>
           </div>
           <div className="header-right">
-            <Link to="/my-page" onClick={(e) => {
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>
+            }}>My Page</Link>}
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>

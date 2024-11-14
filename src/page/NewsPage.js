@@ -91,7 +91,11 @@ const NewsPage = () => {
             <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
           </div>
           <div className="header-right">
-            <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {isLoggedIn && <Link to="/my-page" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/my-page';
+            }}>My Page</Link>}
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage} />}
           </div>
