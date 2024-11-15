@@ -90,9 +90,14 @@ const WasteRecord = () => {
     setFilteredRecords(filteredRecords);
   };
 
-  /* 검색 필터 */
   const handleSearchClick = () => {
-    filterRecords(); // 검색된 결과를 상태에 저장
+    if (startDate && !endDate) {
+      showMessage("마지막 날짜를 선택해 주세요.");
+    } else if (!startDate && endDate) {
+      showMessage("시작 날짜를 선택해 주세요.");
+    } else {
+      filterRecords();
+    }
   };
 
   useEffect(() => {
