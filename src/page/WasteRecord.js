@@ -104,6 +104,17 @@ const WasteRecord = () => {
     setFilteredRecords(records); // 초기 렌더링 시 전체 기록을 보여줍니다.
   }, [records]);
 
+  const handleProfileImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('profileImage').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const showMessage = (msg) => {
     setMessage(msg);
     setIsModalOpen(true);
