@@ -52,12 +52,12 @@ const MyPage = () => {
   useEffect(() => {
     const fetchWasteRecords = async () => {
       try {
-        const response = await apiClient.get(
-            `/api/waste/records/users/${userId}`);
-        const recordsData = response.data.data || [];
-        if (Array.isArray(recordsData)) {
-          setEntries(recordsData);
-          categorizeRecords(recordsData);
+        const response = await apiClient.get(`/api/waste/records/users/${userId}`);
+        const recordsData = response.data.data || {};
+
+        if (recordsData.content && Array.isArray(recordsData.content)) {
+          setEntries(recordsData.content);
+          categorizeRecords(recordsData.content);
         } else {
           console.error('Unexpected response structure:', recordsData);
           setEntries([]);
