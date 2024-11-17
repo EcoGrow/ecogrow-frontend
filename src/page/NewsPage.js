@@ -40,16 +40,30 @@ const NewsPage = () => {
   const fetchNews = async (page) => {
     try {
       const response = await axios.get('/api/news/search', {
-        params: {page: page - 1, size: newsPerPage}
+        params: { page: page - 1, size: newsPerPage },
       });
       const data = response.data;
 
-      setNewsData(data.content);
+      const decodeHtmlEntities = (text) => {
+        const parser = new DOMParser();
+        const decodedString = parser.parseFromString(text, 'text/html').body
+            .textContent;
+        return decodedString;
+      };
+
+      const cleanedData = data.content.map((item) => ({
+        ...item,
+        title: decodeHtmlEntities(item.title),
+        description: decodeHtmlEntities(item.description),
+      }));
+
+      setNewsData(cleanedData);
       setTotalPages(data.totalPages);
     } catch (error) {
       console.error("Error fetching news data:", error);
     }
   };
+
 
   useEffect(() => {
     fetchNews(currentPage);
