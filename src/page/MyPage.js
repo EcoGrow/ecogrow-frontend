@@ -52,12 +52,12 @@ const MyPage = () => {
   useEffect(() => {
     const fetchWasteRecords = async () => {
       try {
-        const response = await apiClient.get(
-            `/api/waste/records/users/${userId}`);
-        const recordsData = response.data.data || [];
-        if (Array.isArray(recordsData)) {
-          setEntries(recordsData);
-          categorizeRecords(recordsData);
+        const response = await apiClient.get(`/api/waste/records/users/${userId}`);
+        const recordsData = response.data.data || {};
+
+        if (recordsData.content && Array.isArray(recordsData.content)) {
+          setEntries(recordsData.content);
+          categorizeRecords(recordsData.content);
         } else {
           console.error('Unexpected response structure:', recordsData);
           setEntries([]);
@@ -73,8 +73,13 @@ const MyPage = () => {
     const fetchWasteReductionTips = async () => {
       try {
         const response = await apiClient.get(`/api/waste/tips/users/${userId}`);
+
+        console.log('API 응답:', response. data);
+
         const tipsData = response.data.data || [];
         setTips(tipsData); // Store the fetched tips data
+
+        console.log('팁 데이터 구조:', tipsData);
       } catch (error) {
         console.error('Error fetching waste reduction tips:', error);
       }
@@ -315,7 +320,7 @@ const MyPage = () => {
             <div id="dynamicTips" className="tip-content">
               {tips.length > 0 ? (
                   tips.map((tip, index) => (
-                      <p key={index}>{tip.message}</p>
+                      <p key={index}>{tip.tips}</p>
                   ))
               ) : (
                   <p>No personalized tips available.</p>
@@ -338,7 +343,10 @@ const MyPage = () => {
               {entries.map((entry, index) => (
                   <tr key={index} onClick={() => viewRecordDetails(entry.id)}
                       style={{cursor: 'pointer'}}>
-                    <td>{entry.date || entry.createdAt || "No Date"}</td>
+                    <td>{entry.date || new Date(entry.createdAt).toLocaleDateString()} {new Date(entry.createdAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    }) || "No Date"}</td>
                     <td>{entry.trashType || entry.wasteItems?.[0]?.wasteType
                         || "No Type"}</td>
                     <td>{entry.amount || entry.wasteItems?.[0]?.amount
