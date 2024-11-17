@@ -302,11 +302,17 @@ const WasteRecord = () => {
                   <input type="date" value={endDate} onChange={handleDateChange(setEndDate)}/>
                 </div>
               </label>
-              <button className="search-button" onClick={handleSearchClick}>검색 🔍</button>
+              <div className="record-button-container">
+                <button className="search-button" onClick={handleSearchClick}>검색하기 🔍</button>
+                <button className="record-button"
+                        onClick={() => navigate('/WasteRecordWrite')}>
+                  기록하기 📝
+                </button>
+              </div>
             </section>
 
             <div className="individual-records">
-              {currentRecords.length > 0 ? (
+            {currentRecords.length > 0 ? (
                   currentRecords.map((record) => (
                       <Link to={`/wasteRecord/${record.id}`}
                             className="record-card" key={record.id}>
@@ -344,12 +350,6 @@ const WasteRecord = () => {
               </button>
             </div>
 
-            <div className="record-button-container">
-              <button className="record-button"
-                      onClick={() => navigate('/WasteRecordWrite')}>
-                Record Waste
-              </button>
-            </div>
           </div>
           {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
         </div>
