@@ -311,8 +311,6 @@ const WasteRecordDetail = () => {
                             <option value="">Select unit</option>
                             <option value="kg">Kilograms (kg)</option>
                             <option value="g">Grams (g)</option>
-                            <option value="l">Liters (L)</option>
-                            <option value="pieces">Pieces</option>
                           </select>
                           <button
                               type="button"

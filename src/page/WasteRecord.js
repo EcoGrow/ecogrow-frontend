@@ -15,11 +15,12 @@ const WasteRecord = () => {
   const [records, setRecords] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [filteredRecords, setFilteredRecords] = useState([]);
-  const [sortOption, setSortOption] = useState([]);
+  const [sortOption, setSortOption] = useState("newest");
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-  const recordsPerPage = 12; // 페이지당 표시할 레코드 수
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 8;
+  const [totalPages, setTotalPages] = useState(1);
   const { editableStates } = useEditable();   // 수정됐는지 확인
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
@@ -74,24 +75,29 @@ const WasteRecord = () => {
     if (startDate && endDate) {
       filteredRecords = filteredRecords.filter(record => {
         const recordDate = new Date(record.createdAt);
-        return recordDate >= new Date(startDate) && recordDate <= new Date(endDate);
+        return recordDate >= new Date(startDate) && recordDate <= new Date(
+            endDate);
       });
     }
-    if (sortOption === 'likes') {
-      filteredRecords.sort((a, b) => b.likes - a.likes);
-    }
-    else if (sortOption === 'newest') {
-      filteredRecords.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }
-    else if (sortOption === 'oldest') {
-      filteredRecords.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    if (sortOption === 'newest') {
+      filteredRecords.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortOption === 'oldest') {
+      filteredRecords.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     }
     setFilteredRecords(filteredRecords);
   };
 
   /* 검색 필터 */
   const handleSearchClick = () => {
-    filterRecords(); // 검색된 결과를 상태에 저장
+    if (startDate && !endDate) {
+      showMessage("마지막 날짜를 선택해 주세요.");
+    } else if (!startDate && endDate) {
+      showMessage("시작 날짜를 선택해 주세요.");
+    } else {
+      filterRecords();
+    }
   };
 
   useEffect(() => {
@@ -167,42 +173,48 @@ const WasteRecord = () => {
   };
 
   // 백엔드에서 record 가져오는 코드
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await apiClient.get('/api/waste/records');
-        const recordsData = response.data.data || [];
+  const fetchData = async (page) => {
+    try {
+      const response = await apiClient.get('/api/waste/records', {
+        params: {page: page - 1, size: recordsPerPage}
+      });
+      const recordsData = response.data.data;
 
-        if (Array.isArray(recordsData)) {
-          setRecords(recordsData);
-          setFilteredRecords(recordsData);
-          aggregateDataForCharts(recordsData);
-        } else {
-          console.error('Unexpected response structure:', recordsData);
-          setRecords([]);
-        }
-      } catch (error) {
-        console.error('Error fetching waste records:', error);
+      if (recordsData) {
+        setRecords(recordsData.content);
+        setFilteredRecords(recordsData.content);
+        aggregateDataForCharts(recordsData.content);
+        setTotalPages(recordsData.totalPages);
+      } else {
+        console.error('Unexpected response structure:', recordsData);
+        setRecords([]);
       }
-    };
-    fetchData();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching waste records:', error);
+    }
+  };
 
   // 페이지네이션을 위한 현재 페이지에 해당하는 레코드
-  const indexOfLastRecord = currentPage * recordsPerPage;
-  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = filteredRecords.slice(indexOfFirstRecord, indexOfLastRecord);
+  useEffect(() => {
+    fetchData(currentPage);
+  }, [currentPage]);
 
   const handleNextPage = () => {
-    if (currentPage < Math.ceil(filteredRecords.length / recordsPerPage)) {
-      setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((prevPage) => prevPage - 1);
     }
+  };
+
+  // 초기화
+  const handleResetDateFilter = () => {
+    setStartDate('');
+    setEndDate('');
   };
 
   return (
@@ -291,7 +303,6 @@ const WasteRecord = () => {
                 <select value={sortOption} onChange={handleSortChange}>
                   <option value="newest">최신순</option>
                   <option value="oldest">오래된 순</option>
-                  <option value="likes">좋아요 많은 순</option>
                 </select>
               </label>
               <label className="date-label">
@@ -301,6 +312,7 @@ const WasteRecord = () => {
                   <span className="date-separator">~</span>
                   <input type="date" value={endDate} onChange={handleDateChange(setEndDate)}/>
                 </div>
+                <button className="reset-date-button" onClick={handleResetDateFilter}>초기화 🔄</button>
               </label>
               <div className="record-button-container">
                 <button className="search-button" onClick={handleSearchClick}>검색하기 🔍</button>
@@ -312,18 +324,16 @@ const WasteRecord = () => {
             </section>
 
             <div className="individual-records">
-            {currentRecords.length > 0 ? (
-                  currentRecords.map((record) => (
+              {filteredRecords.length > 0 ? (
+                  filteredRecords.map((record) => (
                       <Link to={`/wasteRecord/${record.id}`}
                             className="record-card" key={record.id}>
                         <div className="card-header">
                           <h3>작성자: {record.username}</h3>
-                          <h4>기록
-                            날짜: {new Date(record.createdAt).toLocaleDateString()} {new Date(record.createdAt).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              second: '2-digit'
-                            })}
+                          <h4>기록 날짜: {new Date(
+                              record.createdAt).toLocaleDateString()} {new Date(
+                              record.createdAt).toLocaleTimeString([],
+                              {hour: '2-digit', minute: '2-digit'})}
                             {editableStates[record.id] && <span className="edited-label">(수정됨)</span>}
                           </h4>
                         </div>
@@ -341,12 +351,10 @@ const WasteRecord = () => {
 
             {/* 페이지네이션 버튼 */}
             <div className="pagination-buttons">
-              <button onClick={handlePrevPage} disabled={currentPage === 1}>
-                이전
+              <button onClick={handlePrevPage} disabled={currentPage === 1}>이전
               </button>
               <button onClick={handleNextPage}
-                      disabled={currentPage === Math.ceil(filteredRecords.length / recordsPerPage)}>
-                다음
+                      disabled={currentPage >= totalPages}>다음
               </button>
             </div>
 
