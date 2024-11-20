@@ -1,16 +1,16 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import AuthPage from './page/Auth/AuthPage';
-import MainPage from './page/MainPage';
-import MyPage from './page/MyPage';
-import NewsPage from './page/NewsPage';
-import WasteRecord from './page/WasteRecord';
-import WasteRecordWrite from './page/WasteRecordWrite';
-import WasteRecordDetail from './page/WasteRecordDetail';
-import RecyclingTips from './page/RecyclingTips';
-import KakaoCallback from './page/Auth/KakaoCallback';
-import GoogleCallback from "./page/Auth/GoogleCallback";
-import { EditableProvider } from './page/EditableContext';
+import AuthPage from './pages/Auth/AuthPage';
+import MainPage from './pages/MainPage';
+import MyPage from './pages/MyPage';
+import NewsPage from './pages/NewsPage';
+import WasteRecord from './pages/WasteRecord';
+import WasteRecordWrite from './pages/WasteRecordWrite';
+import WasteRecordDetail from './pages/WasteRecordDetail';
+import RecyclingTips from './pages/RecyclingTips';
+import KakaoCallback from './pages/Auth/KakaoCallback';
+import GoogleCallback from "./pages/Auth/GoogleCallback";
+import { EditableProvider } from './pages/EditableContext';
 
 function App() {
   return (
