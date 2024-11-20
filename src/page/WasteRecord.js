@@ -6,7 +6,7 @@ import LogoutButton from '../components/Logout';
 import {Link, useNavigate} from 'react-router-dom';
 import Modal from '../components/Modal';
 import {apiClient} from '../api/client';
-import { useEditable } from './EditableContext';
+import {useEditable} from './EditableContext';
 
 const WasteRecord = () => {
   const navigate = useNavigate();
@@ -20,8 +20,9 @@ const WasteRecord = () => {
   const [endDate, setEndDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 8;
+  const [allRecords, setAllRecords] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
-  const { editableStates } = useEditable();   // 수정됐는지 확인
+  const {editableStates} = useEditable();   // 수정됐는지 확인
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
     datasets: [{
@@ -44,6 +45,27 @@ const WasteRecord = () => {
       borderWidth: 1
     }]
   });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchAllRecords = async () => {
+    try {
+      const firstPageResponse = await apiClient.get('/api/waste/records',
+          {params: {page: 0, size: recordsPerPage}});
+      const {content, totalPages} = firstPageResponse.data.data;
+      let allRecords = [...content];
+
+      for (let page = 1; page < totalPages; page++) {
+        const response = await apiClient.get('/api/waste/records',
+            {params: {page, size: recordsPerPage}});
+        allRecords = allRecords.concat(response.data.data.content);
+      }
+
+      setAllRecords(allRecords);
+      aggregateDataForCharts(allRecords); // 집계 함수 호출
+    } catch (error) {
+      console.error('Error fetching all records:', error);
+    }
+  };
 
   useEffect(() => {
     const accessToken = localStorage.getItem('token');
@@ -103,17 +125,6 @@ const WasteRecord = () => {
   useEffect(() => {
     setFilteredRecords(records); // 초기 렌더링 시 전체 기록을 보여줍니다.
   }, [records]);
-
-  const handleProfileImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        document.getElementById('profileImage').src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const showMessage = (msg) => {
     setMessage(msg);
@@ -175,15 +186,13 @@ const WasteRecord = () => {
   // 백엔드에서 record 가져오는 코드
   const fetchData = async (page) => {
     try {
-      const response = await apiClient.get('/api/waste/records', {
-        params: {page: page - 1, size: recordsPerPage}
-      });
+      const response = await apiClient.get('/api/waste/records',
+          {params: {page: page - 1, size: recordsPerPage}});
       const recordsData = response.data.data;
 
       if (recordsData) {
         setRecords(recordsData.content);
         setFilteredRecords(recordsData.content);
-        aggregateDataForCharts(recordsData.content);
         setTotalPages(recordsData.totalPages);
       } else {
         console.error('Unexpected response structure:', recordsData);
@@ -197,7 +206,8 @@ const WasteRecord = () => {
   // 페이지네이션을 위한 현재 페이지에 해당하는 레코드
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage]);
+    fetchAllRecords();
+  }, [currentPage, fetchAllRecords]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -239,12 +249,14 @@ const WasteRecord = () => {
             }}>Recycling Tips</Link>
           </div>
           <div className="header-right">
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
+              Page</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            {!isLoggedIn && <Link to="/login"
+                                  onClick={handleLoginClick}>Login</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -308,14 +320,20 @@ const WasteRecord = () => {
               <label className="date-label">
                 날짜 검색 :
                 <div className="date-inputs">
-                  <input type="date" value={startDate} onChange={handleDateChange(setStartDate)}/>
+                  <input type="date" value={startDate}
+                         onChange={handleDateChange(setStartDate)}/>
                   <span className="date-separator">~</span>
-                  <input type="date" value={endDate} onChange={handleDateChange(setEndDate)}/>
+                  <input type="date" value={endDate}
+                         onChange={handleDateChange(setEndDate)}/>
                 </div>
-                <button className="reset-date-button" onClick={handleResetDateFilter}>초기화 🔄</button>
+                <button className="reset-date-button"
+                        onClick={handleResetDateFilter}>초기화 🔄
+                </button>
               </label>
               <div className="record-button-container">
-                <button className="search-button" onClick={handleSearchClick}>검색하기 🔍</button>
+                <button className="search-button"
+                        onClick={handleSearchClick}>검색하기 🔍
+                </button>
                 <button className="record-button"
                         onClick={() => navigate('/WasteRecordWrite')}>
                   기록하기 📝
@@ -334,7 +352,8 @@ const WasteRecord = () => {
                               record.createdAt).toLocaleDateString()} {new Date(
                               record.createdAt).toLocaleTimeString([],
                               {hour: '2-digit', minute: '2-digit'})}
-                            {editableStates[record.id] && <span className="edited-label">(수정됨)</span>}
+                            {editableStates[record.id] && <span
+                                className="edited-label">(수정됨)</span>}
                           </h4>
                         </div>
                         <div className="card-image">
