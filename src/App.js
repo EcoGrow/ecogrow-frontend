@@ -8,9 +8,10 @@ import WasteRecord from './pages/WasteRecord';
 import WasteRecordWrite from './pages/WasteRecordWrite';
 import WasteRecordDetail from './pages/WasteRecordDetail';
 import RecyclingTips from './pages/RecyclingTips';
+import Product from './pages/Product';
 import KakaoCallback from './pages/Auth/KakaoCallback';
 import GoogleCallback from "./pages/Auth/GoogleCallback";
-import { EditableProvider } from './pages/EditableContext';
+import {EditableProvider} from './pages/EditableContext';
 
 function App() {
   return (
@@ -22,8 +23,10 @@ function App() {
             <Route path="/my-page" element={<MyPage/>}/>
             <Route path="/wasteRecord" element={<WasteRecord/>}/>
             <Route path="/wasteRecordWrite" element={<WasteRecordWrite/>}/>
-            <Route path="/wasteRecord/:recordId" element={<WasteRecordDetail />} />
+            <Route path="/wasteRecord/:recordId"
+                   element={<WasteRecordDetail/>}/>
             <Route path="/recycling-tips" element={<RecyclingTips/>}/>
+            <Route path="/product" element={<Product/>}/>
             <Route path="/login"
                    element={<AuthPage/>}/> {/* 로그인 페이지는 /login 경로로 설정 */}
             <Route path="/signup" element={<AuthPage/>}/>
