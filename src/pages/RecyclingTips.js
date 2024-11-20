@@ -33,17 +33,6 @@ const RecyclingTips = () => {
     setIsModalOpen(true);
   };
 
-  const handleProfileImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        document.getElementById('profileImage').src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -60,7 +49,7 @@ const RecyclingTips = () => {
             }
           });
         },
-        { threshold: 0.4 } // 섹션의 40%가 뷰포트에 들어오면 감지
+        {threshold: 0.4} // 섹션의 40%가 뷰포트에 들어오면 감지
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -89,15 +78,21 @@ const RecyclingTips = () => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
             }}>Recycling Tips</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
+              Page</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
+            {!isLoggedIn && <Link to="/login"
+                                  onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
 

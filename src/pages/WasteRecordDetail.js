@@ -40,15 +40,15 @@ const WasteRecordDetail = () => {
   };
 
   const addTrashEntry = () => {
-    const newEntry = { wasteType: '', amount: '', unit: '' };
+    const newEntry = {wasteType: '', amount: '', unit: ''};
     const updatedItems = [...record.wasteItems, newEntry];
-    setRecord({ ...record, wasteItems: updatedItems });
+    setRecord({...record, wasteItems: updatedItems});
   };
 
   const removeTrashEntry = (index) => {
     if (record.wasteItems.length > 1) {
       const updatedItems = record.wasteItems.filter((_, i) => i !== index);
-      setRecord({ ...record, wasteItems: updatedItems });
+      setRecord({...record, wasteItems: updatedItems});
     } else {
       alert('최소 한 개의 쓰레기 항목이 필요합니다!');
     }
@@ -196,19 +196,37 @@ const WasteRecordDetail = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
-            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
-            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
-            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
+            <Link to="/" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/';
+            }}>EcoGrow</Link>
+            <Link to="/news" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/news';
+            }}>Environmental News</Link>
+            <Link to="/wasteRecord" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/wasteRecord';
+            }}>Record Trash</Link>
+            <Link to="/recycling-tips" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/recycling-tips';
+            }}>Recycling Tips</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
+              Page</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
+            {!isLoggedIn && <Link to="/login"
+                                  onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
 
@@ -236,7 +254,9 @@ const WasteRecordDetail = () => {
               <div className="record-metadata">
                 <h4>작성자: {record.username}</h4>
                 <h4>기록
-                  일자: {new Date(record.createdAt).toLocaleDateString()} {new Date(record.createdAt).toLocaleTimeString([], {
+                  일자: {new Date(
+                      record.createdAt).toLocaleDateString()} {new Date(
+                      record.createdAt).toLocaleTimeString([], {
                     hour: '2-digit',
                     minute: '2-digit',
                     second: '2-digit'
@@ -274,7 +294,8 @@ const WasteRecordDetail = () => {
                               onChange={(e) => {
                                 const updatedItems = [...record.wasteItems];
                                 updatedItems[index].wasteType = e.target.value;
-                                setRecord({...record, wasteItems: updatedItems});
+                                setRecord(
+                                    {...record, wasteItems: updatedItems});
                               }}
                           >
                             <option value="">Select trash type</option>
@@ -292,7 +313,8 @@ const WasteRecordDetail = () => {
                               onChange={(e) => {
                                 const updatedItems = [...record.wasteItems];
                                 updatedItems[index].amount = e.target.value;
-                                setRecord({...record, wasteItems: updatedItems});
+                                setRecord(
+                                    {...record, wasteItems: updatedItems});
                               }}
                               required
                               min="0"
@@ -305,7 +327,8 @@ const WasteRecordDetail = () => {
                               onChange={(e) => {
                                 const updatedItems = [...record.wasteItems];
                                 updatedItems[index].unit = e.target.value;
-                                setRecord({...record, wasteItems: updatedItems});
+                                setRecord(
+                                    {...record, wasteItems: updatedItems});
                               }}
                           >
                             <option value="">Select unit</option>

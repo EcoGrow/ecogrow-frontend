@@ -57,7 +57,8 @@ const MyPage = () => {
   useEffect(() => {
     const fetchWasteRecords = async () => {
       try {
-        const response = await apiClient.get(`/api/waste/records/users/${userId}`);
+        const response = await apiClient.get(
+            `/api/waste/records/users/${userId}`);
         const recordsData = response.data.data || {};
 
         if (recordsData.content && Array.isArray(recordsData.content)) {
@@ -98,20 +99,24 @@ const MyPage = () => {
     if (startDate && endDate) {
       filteredEntries = filteredEntries.filter(entry => {
         const entryDate = new Date(entry.createdAt);
-        return entryDate >= new Date(startDate) && entryDate <= new Date(endDate);
+        return entryDate >= new Date(startDate) && entryDate <= new Date(
+            endDate);
       });
     }
     // 타입 필터링
     if (selectedTrashType) {
       filteredEntries = filteredEntries.filter(entry => {
-        return entry.wasteItems.some(item => item.wasteType === selectedTrashType);
+        return entry.wasteItems.some(
+            item => item.wasteType === selectedTrashType);
       });
     }
     // 정렬
     if (sortOption === 'newest') {
-      filteredEntries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      filteredEntries.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } else if (sortOption === 'oldest') {
-      filteredEntries.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      filteredEntries.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     }
     setSortedEntries(filteredEntries);
   };
@@ -296,14 +301,19 @@ const MyPage = () => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
             }}>Recycling Tips</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
             <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
+            {!isLoggedIn && <Link to="/login"
+                                  onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
 
@@ -407,16 +417,22 @@ const MyPage = () => {
               <label className="date-label">
                 날짜 검색 :
                 <div className="date-inputs">
-                  <input type="date" value={startDate} onChange={handleDateChange(setStartDate)}/>
+                  <input type="date" value={startDate}
+                         onChange={handleDateChange(setStartDate)}/>
                   <span className="date-separator">~</span>
-                  <input type="date" value={endDate} onChange={handleDateChange(setEndDate)}/>
+                  <input type="date" value={endDate}
+                         onChange={handleDateChange(setEndDate)}/>
                 </div>
-                <button className="reset-date-button" onClick={handleResetDateFilter}>초기화 🔄</button>
+                <button className="reset-date-button"
+                        onClick={handleResetDateFilter}>초기화 🔄
+                </button>
               </label>
             </section>
             <div className="search-button-container">
               <h3>나의 쓰레기 기록</h3>
-              <button className="my-search-button" onClick={handleSearchClick}>검색하기 🔍</button>
+              <button className="my-search-button"
+                      onClick={handleSearchClick}>검색하기 🔍
+              </button>
             </div>
 
             <table className="records-table">
@@ -431,9 +447,12 @@ const MyPage = () => {
               <tbody>
               {sortedEntries.length > 0 ? (
                   sortedEntries.map((entry, index) => (
-                      <tr key={index} onClick={() => viewRecordDetails(entry.id)}
+                      <tr key={index}
+                          onClick={() => viewRecordDetails(entry.id)}
                           style={{cursor: 'pointer'}}>
-                        <td>{entry.date || new Date(entry.createdAt).toLocaleDateString()} {new Date(entry.createdAt).toLocaleTimeString([], {
+                        <td>{entry.date || new Date(
+                            entry.createdAt).toLocaleDateString()} {new Date(
+                            entry.createdAt).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit'
                         }) || "No Date"}</td>
