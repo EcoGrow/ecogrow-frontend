@@ -23,7 +23,7 @@ const WasteRecord = () => {
   const [totalPages, setTotalPages] = useState(1);
   const { editableStates } = useEditable();   // 수정됐는지 확인
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
     datasets: [{
       label: 'Weekly Waste (kg)',
       data: [],
@@ -37,7 +37,6 @@ const WasteRecord = () => {
       'Metal (Recyclable)', 'Organic (Non-Recyclable)',
       'General Waste (Non-Recyclable)'],
     datasets: [{
-      label: 'kg',
       data: [],
       backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
         'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)',
@@ -90,6 +89,7 @@ const WasteRecord = () => {
     setFilteredRecords(filteredRecords);
   };
 
+  /* 검색 필터 */
   const handleSearchClick = () => {
     if (startDate && !endDate) {
       showMessage("마지막 날짜를 선택해 주세요.");
@@ -194,6 +194,7 @@ const WasteRecord = () => {
     }
   };
 
+  // 페이지네이션을 위한 현재 페이지에 해당하는 레코드
   useEffect(() => {
     fetchData(currentPage);
   }, [currentPage]);
@@ -208,6 +209,12 @@ const WasteRecord = () => {
     if (currentPage > 1) {
       setCurrentPage((prevPage) => prevPage - 1);
     }
+  };
+
+  // 초기화
+  const handleResetDateFilter = () => {
+    setStartDate('');
+    setEndDate('');
   };
 
   return (
@@ -305,8 +312,15 @@ const WasteRecord = () => {
                   <span className="date-separator">~</span>
                   <input type="date" value={endDate} onChange={handleDateChange(setEndDate)}/>
                 </div>
+                <button className="reset-date-button" onClick={handleResetDateFilter}>초기화 🔄</button>
               </label>
-              <button className="search-button" onClick={handleSearchClick}>검색 🔍</button>
+              <div className="record-button-container">
+                <button className="search-button" onClick={handleSearchClick}>검색하기 🔍</button>
+                <button className="record-button"
+                        onClick={() => navigate('/WasteRecordWrite')}>
+                  기록하기 📝
+                </button>
+              </div>
             </section>
 
             <div className="individual-records">
@@ -324,7 +338,9 @@ const WasteRecord = () => {
                           </h4>
                         </div>
                         <div className="card-image">
-                          <img src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/refs/heads/feat/FeatureModification/Trash.png" alt="Trash"/>
+                          <img
+                              src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/refs/heads/feat/FeatureModification/Trash.png"
+                              alt="Trash"/>
                         </div>
                       </Link>
                   ))
@@ -342,12 +358,6 @@ const WasteRecord = () => {
               </button>
             </div>
 
-            <div className="record-button-container">
-              <button className="record-button"
-                      onClick={() => navigate('/WasteRecordWrite')}>
-                Record Waste
-              </button>
-            </div>
           </div>
           {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
         </div>

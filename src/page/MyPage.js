@@ -18,6 +18,11 @@ const MyPage = () => {
   const [tips, setTips] = useState([]);
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [sortedEntries, setSortedEntries] = useState([]);
+  const [sortOption, setSortOption] = useState('newest');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedTrashType, setSelectedTrashType] = useState('');
 
   const userId = localStorage.getItem('userId');
   console.log("userId :", userId)
@@ -74,7 +79,7 @@ const MyPage = () => {
       try {
         const response = await apiClient.get(`/api/waste/tips/users/${userId}`);
 
-        console.log('API 응답:', response. data);
+        console.log('API 응답:', response.data.data);
 
         const tipsData = response.data.data || [];
         setTips(tipsData); // Store the fetched tips data
@@ -86,6 +91,56 @@ const MyPage = () => {
     };
     fetchWasteReductionTips();
   }, [userId]);
+
+  const filterEntries = () => {
+    let filteredEntries = [...entries];
+    // 날짜 필터링
+    if (startDate && endDate) {
+      filteredEntries = filteredEntries.filter(entry => {
+        const entryDate = new Date(entry.createdAt);
+        return entryDate >= new Date(startDate) && entryDate <= new Date(endDate);
+      });
+    }
+    // 타입 필터링
+    if (selectedTrashType) {
+      filteredEntries = filteredEntries.filter(entry => {
+        return entry.wasteItems.some(item => item.wasteType === selectedTrashType);
+      });
+    }
+    // 정렬
+    if (sortOption === 'newest') {
+      filteredEntries.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortOption === 'oldest') {
+      filteredEntries.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    }
+    setSortedEntries(filteredEntries);
+  };
+
+  const handleSearchClick = () => {
+    if (startDate && !endDate) {
+      showMessage("마지막 날짜를 선택해 주세요.");
+    } else if (!startDate && endDate) {
+      showMessage("시작 날짜를 선택해 주세요.");
+    } else {
+      filterEntries();
+    }
+  };
+
+  useEffect(() => {
+    setSortedEntries(entries);
+  }, [entries]);
+
+  useEffect(() => {
+  }, [entries, startDate, endDate, sortOption, selectedTrashType]);
+
+  const handleSortChange = (e) => setSortOption(e.target.value);
+  const handleDateChange = (setter) => (e) => setter(e.target.value);
+  const handleTrashTypeChange = (e) => setSelectedTrashType(e.target.value);
+
+  const handleResetDateFilter = () => {
+    setStartDate('');
+    setEndDate('');
+  };
 
   const categorizeRecords = (records) => {
     const today = new Date();
@@ -329,7 +384,41 @@ const MyPage = () => {
           </section>
 
           <section className="mypage-section">
-            <h3>나의 쓰레기 기록</h3>
+            <section className="filter-section">
+              <label className="sort-label">
+                정렬 기준 :
+                <select value={sortOption} onChange={handleSortChange}>
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+              </label>
+              <label className="sort-label">
+                필터 검색 :
+                <select onChange={(e) => setSelectedTrashType(e.target.value)}>
+                  <option value="">All</option>
+                  <option value="plastic">Plastic</option>
+                  <option value="paper">Paper</option>
+                  <option value="glass">Glass</option>
+                  <option value="metal">Metal</option>
+                  <option value="organic">Organic</option>
+                  <option value="general">General</option>
+                </select>
+              </label>
+              <label className="date-label">
+                날짜 검색 :
+                <div className="date-inputs">
+                  <input type="date" value={startDate} onChange={handleDateChange(setStartDate)}/>
+                  <span className="date-separator">~</span>
+                  <input type="date" value={endDate} onChange={handleDateChange(setEndDate)}/>
+                </div>
+                <button className="reset-date-button" onClick={handleResetDateFilter}>초기화 🔄</button>
+              </label>
+            </section>
+            <div className="search-button-container">
+              <h3>나의 쓰레기 기록</h3>
+              <button className="my-search-button" onClick={handleSearchClick}>검색하기 🔍</button>
+            </div>
+
             <table className="records-table">
               <thead>
               <tr>
@@ -340,20 +429,24 @@ const MyPage = () => {
               </tr>
               </thead>
               <tbody>
-              {entries.map((entry, index) => (
-                  <tr key={index} onClick={() => viewRecordDetails(entry.id)}
-                      style={{cursor: 'pointer'}}>
-                    <td>{entry.date || new Date(entry.createdAt).toLocaleDateString()} {new Date(entry.createdAt).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    }) || "No Date"}</td>
-                    <td>{entry.trashType || entry.wasteItems?.[0]?.wasteType
-                        || "No Type"}</td>
-                    <td>{entry.amount || entry.wasteItems?.[0]?.amount
-                        || "No Amount"}</td>
-                    <td>View</td>
-                  </tr>
-              ))}
+              {sortedEntries.length > 0 ? (
+                  sortedEntries.map((entry, index) => (
+                      <tr key={index} onClick={() => viewRecordDetails(entry.id)}
+                          style={{cursor: 'pointer'}}>
+                        <td>{entry.date || new Date(entry.createdAt).toLocaleDateString()} {new Date(entry.createdAt).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        }) || "No Date"}</td>
+                        <td>{entry.trashType || entry.wasteItems?.[0]?.wasteType
+                            || "No Type"}</td>
+                        <td>{entry.amount || entry.wasteItems?.[0]?.amount
+                            || "No Amount"}</td>
+                        <td>View</td>
+                      </tr>
+                  ))
+              ) : (
+                  <p>No records found.</p>
+              )}
               </tbody>
             </table>
           </section>
