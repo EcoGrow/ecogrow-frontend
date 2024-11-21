@@ -138,6 +138,10 @@ const WasteRecordWrite = () => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
             }}>재활용 팁</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
             <div className="header-item">

@@ -60,15 +60,15 @@ const WasteRecordDetail = () => {
   };
 
   const addTrashEntry = () => {
-    const newEntry = { wasteType: '', amount: '', unit: '' };
+    const newEntry = {wasteType: '', amount: '', unit: ''};
     const updatedItems = [...record.wasteItems, newEntry];
-    setRecord({ ...record, wasteItems: updatedItems });
+    setRecord({...record, wasteItems: updatedItems});
   };
 
   const removeTrashEntry = (index) => {
     if (record.wasteItems.length > 1) {
       const updatedItems = record.wasteItems.filter((_, i) => i !== index);
-      setRecord({ ...record, wasteItems: updatedItems });
+      setRecord({...record, wasteItems: updatedItems});
     } else {
       alert('최소 한 개의 쓰레기 항목이 필요합니다!');
     }
@@ -232,6 +232,10 @@ const WasteRecordDetail = () => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
             }}>재활용 팁</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
             <div className="header-item">
@@ -271,7 +275,9 @@ const WasteRecordDetail = () => {
               <div className="record-metadata">
                 <h4>작성자: {record.username}</h4>
                 <h4>기록
-                  일자: {new Date(record.createdAt).toLocaleDateString()} {new Date(record.createdAt).toLocaleTimeString([], {
+                  일자: {new Date(
+                      record.createdAt).toLocaleDateString()} {new Date(
+                      record.createdAt).toLocaleTimeString([], {
                     hour: '2-digit',
                     minute: '2-digit',
                     second: '2-digit'
@@ -309,7 +315,8 @@ const WasteRecordDetail = () => {
                               onChange={(e) => {
                                 const updatedItems = [...record.wasteItems];
                                 updatedItems[index].wasteType = e.target.value;
-                                setRecord({...record, wasteItems: updatedItems});
+                                setRecord(
+                                    {...record, wasteItems: updatedItems});
                               }}
                           >
                             <option value="">쓰레기 종류 선택</option>
@@ -327,7 +334,8 @@ const WasteRecordDetail = () => {
                               onChange={(e) => {
                                 const updatedItems = [...record.wasteItems];
                                 updatedItems[index].amount = e.target.value;
-                                setRecord({...record, wasteItems: updatedItems});
+                                setRecord(
+                                    {...record, wasteItems: updatedItems});
                               }}
                               required
                               min="0"
@@ -340,7 +348,8 @@ const WasteRecordDetail = () => {
                               onChange={(e) => {
                                 const updatedItems = [...record.wasteItems];
                                 updatedItems[index].unit = e.target.value;
-                                setRecord({...record, wasteItems: updatedItems});
+                                setRecord(
+                                    {...record, wasteItems: updatedItems});
                               }}
                           >
                             <option value="">단위 선택</option>

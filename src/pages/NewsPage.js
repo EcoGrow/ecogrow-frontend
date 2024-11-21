@@ -60,7 +60,7 @@ const NewsPage = () => {
   const fetchNews = async (page) => {
     try {
       const response = await axios.get('/api/news/search', {
-        params: { page: page - 1, size: newsPerPage },
+        params: {page: page - 1, size: newsPerPage},
       });
       const data = response.data;
 
@@ -83,7 +83,6 @@ const NewsPage = () => {
       console.error("Error fetching news data:", error);
     }
   };
-
 
   useEffect(() => {
     fetchNews(currentPage);
@@ -123,6 +122,10 @@ const NewsPage = () => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
             }}>재활용 팁</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
             <div className="header-item">

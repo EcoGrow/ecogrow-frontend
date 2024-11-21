@@ -53,17 +53,6 @@ const RecyclingTips = () => {
     setIsModalOpen(true);
   };
 
-  const handleProfileImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        document.getElementById('profileImage').src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -80,7 +69,7 @@ const RecyclingTips = () => {
             }
           });
         },
-        { threshold: 0.4 } // 섹션의 40%가 뷰포트에 들어오면 감지
+        {threshold: 0.4} // 섹션의 40%가 뷰포트에 들어오면 감지
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -111,6 +100,10 @@ const RecyclingTips = () => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
             }}>재활용 팁</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
             <div className="header-item">
