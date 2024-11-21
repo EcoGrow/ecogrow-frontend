@@ -12,6 +12,9 @@ const WasteRecordWrite = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [error, setError] = useState(null); // 에러 상태 추가
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -29,6 +32,23 @@ const WasteRecordWrite = () => {
     if (accessToken) {  // 로그인 상태 체크
       setIsLoggedIn(true); // 로그인 상태로 설정
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchTemperature = async () => {
+      try {
+        const response = await fetch('/api/weather/temperature');
+        const data = await response.text();
+        setTemperature(data);
+        setIsLoading(false); // 로딩 종료
+      } catch (error) {
+        console.error("Failed to fetch temperature:", error);
+        setTemperature("데이터 없음");
+        setError("기온 정보를 가져오는 데 실패했습니다.");
+        setIsLoading(false); // 로딩 종료
+      }
+    };
+    fetchTemperature();
   }, []);
 
   const handleCloseModal = () => {
@@ -106,19 +126,22 @@ const WasteRecordWrite = () => {
             <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
           </div>
           <div className="header-right">
+            <div className="header-item">
+              {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
+            </div>
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>}
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
         <div className="WRW-content">
           <h1>Record Your Trash</h1>
           <div className="record-form">
-            <form id="trashForm" onSubmit={(e) => {
+          <form id="trashForm" onSubmit={(e) => {
               e.preventDefault();
               saveRecords();
             }}>

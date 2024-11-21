@@ -22,6 +22,9 @@ const WasteRecord = () => {
   const recordsPerPage = 8;
   const [totalPages, setTotalPages] = useState(1);
   const { editableStates } = useEditable();   // 수정됐는지 확인
+  const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [error, setError] = useState(null); // 에러 상태 추가
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
     datasets: [{
@@ -50,6 +53,23 @@ const WasteRecord = () => {
     if (accessToken) {  // 로그인 상태 체크
       setIsLoggedIn(true); // 로그인 상태로 설정
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchTemperature = async () => {
+      try {
+        const response = await fetch('/api/weather/temperature');
+        const data = await response.text();
+        setTemperature(data);
+        setIsLoading(false); // 로딩 종료
+      } catch (error) {
+        console.error("Failed to fetch temperature:", error);
+        setTemperature("데이터 없음");
+        setError("기온 정보를 가져오는 데 실패했습니다.");
+        setIsLoading(false); // 로딩 종료
+      }
+    };
+    fetchTemperature();
   }, []);
 
   const handleLoginClick = (e) => {
@@ -194,9 +214,14 @@ const WasteRecord = () => {
     }
   };
 
-  // 페이지네이션을 위한 현재 페이지에 해당하는 레코드
   useEffect(() => {
-    fetchData(currentPage);
+    fetchData(1, startDate, endDate, sortOption); // 첫 페이지부터 다시 로드
+    setCurrentPage(1); // 페이지를 1로 초기화
+  }, [startDate, endDate, sortOption]);
+
+
+  useEffect(() => {
+    fetchData(currentPage, startDate, endDate, sortOption); // 필터 상태를 유지하며 데이터 요청
   }, [currentPage]);
 
   const handleNextPage = () => {
@@ -239,6 +264,9 @@ const WasteRecord = () => {
             }}>Recycling Tips</Link>
           </div>
           <div className="header-right">
+            <div className="header-item">
+              {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
+            </div>
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
@@ -252,7 +280,7 @@ const WasteRecord = () => {
         {/* Image & Animation */}
         <section className="hero-section">
           <div className="floating-leaves">
-            {[10, 30, 50, 70, 90].map((left, index) => (
+          {[10, 30, 50, 70, 90].map((left, index) => (
                 <svg key={index} className="leaf"
                      style={{left: `${left}%`, top: `${index * 10 + 15}%`}}
                      viewBox="0 0 24 24">

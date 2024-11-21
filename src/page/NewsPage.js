@@ -13,12 +13,32 @@ const NewsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const newsPerPage = 9;
+  const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [error, setError] = useState(null); // 에러 상태 추가
 
   useEffect(() => {
     const accessToken = localStorage.getItem('token');
     if (accessToken) {  // 로그인 상태 체크
       setIsLoggedIn(true); // 로그인 상태로 설정
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchTemperature = async () => {
+      try {
+        const response = await fetch('/api/weather/temperature');
+        const data = await response.text();
+        setTemperature(data);
+        setIsLoading(false); // 로딩 종료
+      } catch (error) {
+        console.error("Failed to fetch temperature:", error);
+        setTemperature("데이터 없음");
+        setError("기온 정보를 가져오는 데 실패했습니다.");
+        setIsLoading(false); // 로딩 종료
+      }
+    };
+    fetchTemperature();
   }, []);
 
   const handleLoginClick = (e) => {
@@ -103,6 +123,9 @@ const NewsPage = () => {
             }}>Recycling Tips</Link>
           </div>
           <div className="header-right">
+            <div className="header-item">
+              {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
+            </div>
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
               Page</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
@@ -118,7 +141,7 @@ const NewsPage = () => {
         {/* Image & Animation */}
         <section className="hero-section">
           <div className="floating-leaves">
-            {[10, 30, 50, 70, 90].map((left, index) => (
+          {[10, 30, 50, 70, 90].map((left, index) => (
                 <svg key={index} className="leaf"
                      style={{left: `${left}%`, top: `${index * 10 + 15}%`}}
                      viewBox="0 0 24 24">

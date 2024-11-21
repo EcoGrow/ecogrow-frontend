@@ -23,6 +23,9 @@ const MyPage = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [selectedTrashType, setSelectedTrashType] = useState('');
+  const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [error, setError] = useState(null); // 에러 상태 추가
 
   const userId = localStorage.getItem('userId');
   console.log("userId :", userId)
@@ -32,6 +35,23 @@ const MyPage = () => {
     if (accessToken) {  // 로그인 상태 체크
       setIsLoggedIn(true); // 로그인 상태로 설정
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchTemperature = async () => {
+      try {
+        const response = await fetch('/api/weather/temperature');
+        const data = await response.text();
+        setTemperature(data);
+        setIsLoading(false); // 로딩 종료
+      } catch (error) {
+        console.error("Failed to fetch temperature:", error);
+        setTemperature("데이터 없음");
+        setError("기온 정보를 가져오는 데 실패했습니다.");
+        setIsLoading(false); // 로딩 종료
+      }
+    };
+    fetchTemperature();
   }, []);
 
   const showMessage = (msg) => {
@@ -298,12 +318,15 @@ const MyPage = () => {
             }}>Recycling Tips</Link>
           </div>
           <div className="header-right">
+            <div className="header-item">
+              {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
+            </div>
             <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>My Page</Link>
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
-            {isLoggedIn && <LogoutButton setMessage={showMessage} />}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
 
