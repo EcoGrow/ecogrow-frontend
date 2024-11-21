@@ -43,7 +43,7 @@ const LoginForm = ({toggleMode, setMessage, setIsMessageVisible}) => {
 
       console.log('로그인 응답:', response);
 
-      const {accessToken, refreshToken, userId} = response.data;
+      const {accessToken, refreshToken, userId} = response.data.data;
 
       // 로컬 스토리지에 저장
       localStorage.setItem('token', accessToken);
