@@ -103,7 +103,7 @@ const RecyclingTips = () => {
             <Link to="/product" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/product';
-            }}>Product</Link>
+            }}>친환경 제품</Link>
           </div>
           <div className="header-right">
             <div className="header-item">

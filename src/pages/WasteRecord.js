@@ -26,7 +26,6 @@ const WasteRecord = () => {
   const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const [error, setError] = useState(null); // 에러 상태 추가
-  const {editableStates} = useEditable();   // 수정됐는지 확인
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['1주차', '2주차', '3주차', '4주차'], // adjust as needed
     datasets: [{
@@ -272,7 +271,7 @@ const WasteRecord = () => {
             <Link to="/product" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/product';
-            }}>Product</Link>
+            }}>친환경 제품</Link>
           </div>
           <div className="header-right">
             <div className="header-item">

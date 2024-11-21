@@ -119,33 +119,30 @@ const MainPage = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick={(e) => {
-              e.preventDefault();
-              window.location.href = '/';
-            }}>EcoGrow</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}>EcoGrow</Link>
+            </div>
             <Link to="/news" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/news';
-            }}>Environmental News</Link>
+            }}>환경 뉴스</Link>
             <Link to="/wasteRecord" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/wasteRecord';
-            }}>Record Trash</Link>
+            }}>쓰레기 기록</Link>
             <Link to="/recycling-tips" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
-            }}>Recycling Tips</Link>
+            }}>재활용 팁</Link>
             <Link to="/product" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/product';
-            }}>Product</Link>
-            <div className="header-left-item">
-              <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
-            </div>
-            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>환경 뉴스</Link>
-            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>쓰레기 기록</Link>
-            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>재활용 팁</Link>
+            }}>친환경 제품</Link>
           </div>
+
           <div className="header-right">
             <div className="header-item">
               {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}

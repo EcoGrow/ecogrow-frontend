@@ -322,12 +322,11 @@ const MyPage = () => {
             <Link to="/recycling-tips" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
-            }}>Recycling Tips</Link>
+            }}>재활용 팁</Link>
             <Link to="/product" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/product';
-            }}>Product</Link>
-            }}>재활용 팁</Link>
+            }}>친환경 제품</Link>
           </div>
           <div className="header-right">
             <div className="header-item">
