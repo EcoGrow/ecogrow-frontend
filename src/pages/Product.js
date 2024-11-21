@@ -73,6 +73,10 @@ const Product = () => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
             }}>Recycling Tips</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
             {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
