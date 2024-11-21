@@ -119,21 +119,23 @@ const MainPage = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
-            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
-            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
-            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
+            </div>
+            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>환경 뉴스</Link>
+            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>쓰레기 기록</Link>
+            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>재활용 팁</Link>
           </div>
           <div className="header-right">
             <div className="header-item">
               {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
             </div>
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            }}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>

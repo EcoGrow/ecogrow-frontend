@@ -57,7 +57,7 @@ const LogoutButton = ({ setMessage })  => {
 
   return (
       <a href="#" onClick={handleLogout} className="header-link">
-        Logout
+        로그아웃
       </a>
   );
 };

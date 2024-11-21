@@ -75,15 +75,13 @@ const WasteRecordDetail = () => {
   };
 
   const [wasteTypeData, setWasteTypeData] = useState({
-    labels: ['Plastic', 'Paper', 'Glass', 'Metal', 'Organic', 'General Waste',
-      'Food Waste'],
+    labels: ['플라스틱', '종이', '유리', '금속', '유기 폐기물', '일반쓰레기'],
     datasets: [{
       data: [],
       backgroundColor: [
         'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
         'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)',
-        'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)',
-        'rgba(128, 128, 128, 0.6)'
+        'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)'
       ],
       borderWidth: 1
     }]
@@ -91,7 +89,7 @@ const WasteRecordDetail = () => {
 
   // Recyclability breakdown chart data
   const [recyclabilityData, setRecyclabilityData] = useState({
-    labels: ['Recyclable', 'Non-Recyclable'],
+    labels: ['재활용 가능', '재활용 불가능'],
     datasets: [{
       data: [],
       backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)'],
@@ -216,39 +214,53 @@ const WasteRecordDetail = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
-            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
-            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
-            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}>EcoGrow</Link>
+            </div>
+            <Link to="/news" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/news';
+            }}>환경 뉴스</Link>
+            <Link to="/wasteRecord" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/wasteRecord';
+            }}>쓰레기 기록</Link>
+            <Link to="/recycling-tips" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/recycling-tips';
+            }}>재활용 팁</Link>
           </div>
           <div className="header-right">
             <div className="header-item">
               {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
             </div>
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            }}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
 
         <main className="WRD-content">
-          <h1>{record.username}'s Record</h1>
+          <h1>{record.username}의 기록</h1>
 
           <div className="chart-banner">
 
             {/* Visualization for waste types */}
             <div className="graph-container">
-              <h3>Waste Type Breakdown</h3>
+              <h3>쓰레기 유형 분류</h3>
               <Pie data={wasteTypeData} options={{responsive: true}}/>
             </div>
 
             {/* Visualization for recyclability */}
             <div className="graph-container">
-              <h3>Recyclability Status</h3>
+              <h3>재활용 상태</h3>
               <Doughnut data={recyclabilityData} options={{responsive: true}}/>
             </div>
           </div>
@@ -284,7 +296,7 @@ const WasteRecordDetail = () => {
                 {editMode && (
                     <button type="button" className="add-entry"
                             onClick={addTrashEntry}>
-                      + Add New Trash Entry
+                      + 항목 추가
                     </button>
                 )}
 
@@ -300,13 +312,13 @@ const WasteRecordDetail = () => {
                                 setRecord({...record, wasteItems: updatedItems});
                               }}
                           >
-                            <option value="">Select trash type</option>
-                            <option value="plastic">Plastic</option>
-                            <option value="paper">Paper</option>
-                            <option value="glass">Glass</option>
-                            <option value="metal">Metal</option>
-                            <option value="organic">Organic</option>
-                            <option value="electronic">Electronic</option>
+                            <option value="">쓰레기 종류 선택</option>
+                            <option value="plastic">플라스틱</option>
+                            <option value="paper">종이</option>
+                            <option value="glass">유리</option>
+                            <option value="metal">금속</option>
+                            <option value="organic">유기 폐기물</option>
+                            <option value="general">일반쓰레기</option>
                           </select>
                           <input
                               type="number"
@@ -320,7 +332,7 @@ const WasteRecordDetail = () => {
                               required
                               min="0"
                               step="0.1"
-                              placeholder="Amount"
+                              placeholder="무게"
                           />
                           <select
                               className="unit"
@@ -331,9 +343,9 @@ const WasteRecordDetail = () => {
                                 setRecord({...record, wasteItems: updatedItems});
                               }}
                           >
-                            <option value="">Select unit</option>
-                            <option value="kg">Kilograms (kg)</option>
-                            <option value="g">Grams (g)</option>
+                            <option value="">단위 선택</option>
+                            <option value="kg">킬로그램 (kg)</option>
+                            <option value="g">그램 (g)</option>
                           </select>
                           <button
                               type="button"
@@ -351,12 +363,12 @@ const WasteRecordDetail = () => {
             <div className="action-buttons">
               {!editMode ? (
                   <button className="btn btn-edit"
-                          onClick={toggleEditMode}>Edit</button>
+                          onClick={toggleEditMode}>수정</button>
               ) : (
-                  <button className="btn btn-edit" onClick={saveChanges}>Save
-                    Changes</button>
+                  <button className="btn btn-edit" onClick={saveChanges}>저장
+                  </button>
               )}
-              <button className="btn btn-delete" onClick={deleteRecord}>Delete
+              <button className="btn btn-delete" onClick={deleteRecord}>모두 삭제
               </button>
             </div>
           </div>

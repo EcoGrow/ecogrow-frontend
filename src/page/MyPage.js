@@ -211,17 +211,17 @@ const MyPage = () => {
 
     // Update chart data
     setTodayData({
-      labels: ['Today'],
+      labels: ['일간'],
       datasets: [{data: [todayRecords.length], borderWidth: 1}]
     });
 
     setWeeklyData({
-      labels: ['Weekly'],
+      labels: ['주간'],
       datasets: [{data: [weeklyRecords.length], borderWidth: 1}]
     });
 
     setMonthlyData({
-      labels: ['Monthly'],
+      labels: ['월간'],
       datasets: [{data: [monthlyRecords.length], borderWidth: 1}]
     });
 
@@ -231,7 +231,7 @@ const MyPage = () => {
     });
 
     setRecyclableData({
-      labels: ['Recyclable', 'Non-Recyclable'],
+      labels: ['재활용 가능', '재활용 불가능'],
       datasets: [{
         data: [recyclable, nonRecyclable],
         backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
@@ -300,22 +300,24 @@ const MyPage = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick={(e) => {
-              e.preventDefault();
-              window.location.href = '/';
-            }}>EcoGrow</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}>EcoGrow</Link>
+            </div>
             <Link to="/news" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/news';
-            }}>Environmental News</Link>
+            }}>환경 뉴스</Link>
             <Link to="/wasteRecord" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/wasteRecord';
-            }}>Record Trash</Link>
+            }}>쓰레기 기록</Link>
             <Link to="/recycling-tips" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
-            }}>Recycling Tips</Link>
+            }}>재활용 팁</Link>
           </div>
           <div className="header-right">
             <div className="header-item">
@@ -324,8 +326,8 @@ const MyPage = () => {
             <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            }}>마이페이지</Link>
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -342,8 +344,8 @@ const MyPage = () => {
             ))}
           </div>
           <div>
-            <h1>My Profile</h1>
-            <p>Help protect our planet by reducing waste and recycling</p>
+            <h1>나의 프로필</h1>
+            <p>폐기물을 줄이고 재활용을 통해 지구를 보호합시다!</p>
           </div>
         </section>
 
@@ -352,16 +354,16 @@ const MyPage = () => {
             <div className="profile-card">
               <div className="profile-header">
                 <div className="profile-image-container">
-                  <h3>My Profile</h3>
+                  <h3>나의 프로필</h3>
                   <img id="profileImage" src="https://via.placeholder.com/150"
                        alt="Profile" className="profile-image"/>
-                  <button className="edit-profile-image">Edit Photo</button>
+                  <button className="edit-profile-image">사진 수정</button>
                   <input type="file" id="profileImageInput" hidden
                          accept="image/*" onChange={handleProfileImageUpload}/>
                 </div>
                 <div className="profile-info">
-                  <h3 id="userName">User Name</h3>
-                  <button className="edit-profile-btn">Edit Profile</button>
+                  <h3 id="userName">유저 이름</h3>
+                  <button className="edit-profile-btn">프로필 수정</button>
                 </div>
               </div>
             </div>
@@ -369,26 +371,26 @@ const MyPage = () => {
 
           <div className="stats-grid">
             <div className="stat-card">
-              <h3>Today's Records</h3>
+              <h3>오늘의 기록</h3>
               <canvas id="todayChart"></canvas>
             </div>
             <div className="stat-card">
-              <h3>Weekly Summary</h3>
+              <h3>주간 요약</h3>
               <canvas id="weeklyChart"></canvas>
             </div>
             <div className="stat-card">
-              <h3>Monthly Overview</h3>
+              <h3>월별 개요</h3>
               <canvas id="monthlyChart"></canvas>
             </div>
           </div>
 
           <div className="advanced-stats-grid">
             <div className="stat-card">
-              <h3>Waste Type Distribution</h3>
+              <h3>폐기물 유형 분배</h3>
               <canvas id="wasteTypeChart"></canvas>
             </div>
             <div className="stat-card">
-              <h3>Recycling Status</h3>
+              <h3>재활용 상태</h3>
               <canvas id="recyclingStatusChart"></canvas>
             </div>
           </div>
@@ -411,20 +413,20 @@ const MyPage = () => {
               <label className="sort-label">
                 정렬 기준 :
                 <select value={sortOption} onChange={handleSortChange}>
-                  <option value="newest">Newest</option>
-                  <option value="oldest">Oldest</option>
+                  <option value="newest">최신순</option>
+                  <option value="oldest">오래된 순</option>
                 </select>
               </label>
               <label className="sort-label">
                 필터 검색 :
                 <select onChange={(e) => setSelectedTrashType(e.target.value)}>
-                  <option value="">All</option>
-                  <option value="plastic">Plastic</option>
-                  <option value="paper">Paper</option>
-                  <option value="glass">Glass</option>
-                  <option value="metal">Metal</option>
-                  <option value="organic">Organic</option>
-                  <option value="general">General</option>
+                  <option value="">전체</option>
+                  <option value="plastic">플라스틱</option>
+                  <option value="paper">종이</option>
+                  <option value="glass">유리</option>
+                  <option value="metal">금속</option>
+                  <option value="organic">유기 폐기물</option>
+                  <option value="general">일반쓰레기</option>
                 </select>
               </label>
               <label className="date-label">
@@ -445,9 +447,9 @@ const MyPage = () => {
             <table className="records-table">
               <thead>
               <tr>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Amount</th>
+                <th>날짜</th>
+                <th>종류</th>
+                <th>무게</th>
                 <th>Actions</th>
               </tr>
               </thead>
@@ -462,13 +464,13 @@ const MyPage = () => {
                         }) || "No Date"}</td>
                         <td>{entry.trashType || entry.wasteItems?.[0]?.wasteType
                             || "No Type"}</td>
-                        <td>{entry.amount || entry.wasteItems?.[0]?.amount
+                        <td>{entry.amount || entry.wasteItems?.[0]?.amount + "kg"
                             || "No Amount"}</td>
                         <td>View</td>
                       </tr>
                   ))
               ) : (
-                  <p>No records found.</p>
+                  <p>쓰레기를 찾을 수 없습니다.</p>
               )}
               </tbody>
             </table>

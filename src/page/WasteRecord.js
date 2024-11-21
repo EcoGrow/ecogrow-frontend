@@ -26,9 +26,9 @@ const WasteRecord = () => {
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const [error, setError] = useState(null); // 에러 상태 추가
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
+    labels: ['1주차', '2주차', '3주차', '4주차'], // adjust as needed
     datasets: [{
-      label: 'Weekly Waste (kg)',
+      label: '주간 쓰레기 (kg)',
       data: [],
       backgroundColor: 'rgba(75, 192, 192, 0.6)',
       borderColor: 'rgba(75, 192, 192, 1)',
@@ -36,9 +36,9 @@ const WasteRecord = () => {
     }]
   });
   const [trashTypeRecyclableData, setTrashTypeRecyclableData] = useState({
-    labels: ['Plastic (Recyclable)', 'Paper (Recyclable)', 'Glass (Recyclable)',
-      'Metal (Recyclable)', 'Organic (Non-Recyclable)',
-      'General Waste (Non-Recyclable)'],
+    labels: ['플라스틱 (재활용 가능)', '종이 (재활용 가능)', '유리 (재활용 가능)',
+      '금속 (재활용 가능)', '유기물 (재활용 불가능)',
+      '일반쓰레기 (재활용 불가능)'],
     datasets: [{
       data: [],
       backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
@@ -246,33 +246,35 @@ const WasteRecord = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick={(e) => {
-              e.preventDefault();
-              window.location.href = '/';
-            }}>EcoGrow</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}>EcoGrow</Link>
+            </div>
             <Link to="/news" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/news';
-            }}>Environmental News</Link>
+            }}>환경 뉴스</Link>
             <Link to="/wasteRecord" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/wasteRecord';
-            }}>Record Trash</Link>
+            }}>쓰레기 기록</Link>
             <Link to="/recycling-tips" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
-            }}>Recycling Tips</Link>
+            }}>재활용 팁</Link>
           </div>
           <div className="header-right">
             <div className="header-item">
               {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
             </div>
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            }}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -280,7 +282,7 @@ const WasteRecord = () => {
         {/* Image & Animation */}
         <section className="hero-section">
           <div className="floating-leaves">
-          {[10, 30, 50, 70, 90].map((left, index) => (
+            {[10, 30, 50, 70, 90].map((left, index) => (
                 <svg key={index} className="leaf"
                      style={{left: `${left}%`, top: `${index * 10 + 15}%`}}
                      viewBox="0 0 24 24">
@@ -290,8 +292,8 @@ const WasteRecord = () => {
             ))}
           </div>
           <div>
-            <h1>Record your Trash</h1>
-            <p>Let’s find out by recording the amount of trash I throw away</p>
+            <h1>쓰레기 기록</h1>
+            <p>내가 쓰레기를 얼마나 버리는지 기록해봅시다!</p>
           </div>
         </section>
 
@@ -306,7 +308,7 @@ const WasteRecord = () => {
                   plugins: {
                     title: {
                       display: true,
-                      text: 'Weekly Waste Emissions'
+                      text: '주간 쓰레기 배출량'
                     }
                   }
                 }}/>
@@ -317,7 +319,7 @@ const WasteRecord = () => {
                   plugins: {
                     title: {
                       display: true,
-                      text: 'Waste Types & Recycling Status'
+                      text: '쓰레기 종류 & 재활용 상태'
                     }, legend: {position: 'right'}
                   }
                 }}/>

@@ -93,33 +93,35 @@ const RecyclingTips = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick={(e) => {
-              e.preventDefault();
-              window.location.href = '/';
-            }}>EcoGrow</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}>EcoGrow</Link>
+            </div>
             <Link to="/news" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/news';
-            }}>Environmental News</Link>
+            }}>환경 뉴스</Link>
             <Link to="/wasteRecord" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/wasteRecord';
-            }}>Record Trash</Link>
+            }}>쓰레기 기록</Link>
             <Link to="/recycling-tips" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
-            }}>Recycling Tips</Link>
+            }}>재활용 팁</Link>
           </div>
           <div className="header-right">
             <div className="header-item">
               {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
             </div>
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            }}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -127,7 +129,7 @@ const RecyclingTips = () => {
         {/* Image & Animation */}
         <section className="hero-section">
           <div className="floating-leaves">
-          {[10, 30, 50, 70, 90].map((left, index) => (
+            {[10, 30, 50, 70, 90].map((left, index) => (
                 <svg key={index} className="leaf"
                      style={{left: `${left}%`, top: `${index * 10 + 15}%`}}
                      viewBox="0 0 24 24">
@@ -137,8 +139,8 @@ const RecyclingTips = () => {
             ))}
           </div>
           <div>
-            <h1>Recycling Tips</h1>
-            <p>Let’s learn about recycling tips</p>
+            <h1>재활용 팁</h1>
+            <p>재활용 팁을 함께 알아봅시다!</p>
           </div>
         </section>
 

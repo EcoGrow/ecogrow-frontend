@@ -28,7 +28,12 @@ body, html {
 
 .header-item {
   display: flex;
-  margin-top: 5px;
+  margin-top: 8px;
+}
+
+.header-left-item {
+  display: flex;
+  margin-top: 2px;
 }
 
 .header a {

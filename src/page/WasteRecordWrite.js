@@ -120,34 +120,49 @@ const WasteRecordWrite = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
-            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
-            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
-            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}>EcoGrow</Link>
+            </div>
+            <Link to="/news" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/news';
+            }}>환경 뉴스</Link>
+            <Link to="/wasteRecord" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/wasteRecord';
+            }}>쓰레기 기록</Link>
+            <Link to="/recycling-tips" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/recycling-tips';
+            }}>재활용 팁</Link>
           </div>
           <div className="header-right">
             <div className="header-item">
               {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
             </div>
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>Login</Link>}
+            }}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
+
         <div className="WRW-content">
-          <h1>Record Your Trash</h1>
+          <h1>쓰레기 기록하기</h1>
           <div className="record-form">
-          <form id="trashForm" onSubmit={(e) => {
+            <form id="trashForm" onSubmit={(e) => {
               e.preventDefault();
               saveRecords();
             }}>
               <button type="button" className="add-entry"
                       onClick={addTrashEntry}>
-                + Add New Trash Entry
+                + 항목 추가
               </button>
 
               <div id="trashEntries" className="trash-entries">
@@ -160,13 +175,13 @@ const WasteRecordWrite = () => {
                               e.target.value)}
                           required
                       >
-                        <option value="">Select trash type</option>
-                        <option value="plastic">Plastic</option>
-                        <option value="paper">Paper</option>
-                        <option value="glass">Glass</option>
-                        <option value="metal">Metal</option>
-                        <option value="organic">Organic</option>
-                        <option value="general">General</option>
+                        <option value="">쓰레기 종류 선택</option>
+                        <option value="plastic">플라스틱</option>
+                        <option value="paper">종이</option>
+                        <option value="glass">유리</option>
+                        <option value="metal">금속</option>
+                        <option value="organic">유기물</option>
+                        <option value="general">일반쓰레기</option>
                       </select>
                       <input
                           type="number"
@@ -177,7 +192,7 @@ const WasteRecordWrite = () => {
                           required
                           min="0"
                           step="0.1"
-                          placeholder="Amount"
+                          placeholder="무게"
                       />
                       <select
                           className="unit"
@@ -186,9 +201,9 @@ const WasteRecordWrite = () => {
                               e.target.value)}
                           required
                       >
-                        <option value="">Select unit</option>
-                        <option value="kg">Kilograms (kg)</option>
-                        <option value="g">Grams (g)</option>
+                        <option value="">단위 선택</option>
+                        <option value="kg">킬로그램 (kg)</option>
+                        <option value="g">그램 (g)</option>
                       </select>
                       <button type="button" className="trash-entry-remove"
                               onClick={() => removeTrashEntry(index)}>×
@@ -199,10 +214,10 @@ const WasteRecordWrite = () => {
 
               <div className="button-group">
                 <button type="button" className="btn btn-edit"
-                        onClick={saveRecords}>Save
+                        onClick={saveRecords}>저장
                 </button>
                 <button type="button" className="btn btn-delete"
-                        onClick={deleteAllRecords}>Delete All
+                        onClick={deleteAllRecords}>모두 삭제
                 </button>
               </div>
             </form>
