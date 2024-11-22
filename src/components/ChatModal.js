@@ -1,167 +1,137 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import axios from 'axios';
-import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs';
+import React, { useState, useEffect } from 'react';
 import './ChatModal.css';
 
-const ChatModal = ({ isOpen, onClose, userId }) => {
+const ChatModal = ({ isOpen, onClose }) => {
     const [chatRooms, setChatRooms] = useState([]);
     const [selectedChatRoom, setSelectedChatRoom] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
-    const [recipientEmail, setRecipientEmail] = useState('');
-    const stompClientRef = useRef(null);
-
-    // 채팅방 목록 가져오기
-    const fetchChatRooms = useCallback(async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`/api/chat/rooms/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            setChatRooms(response.data);
-        } catch (error) {
-            console.error('Error fetching chat rooms', error);
-        }
-    }, [userId]);
 
     useEffect(() => {
         if (isOpen) {
             fetchChatRooms();
         }
-    }, [isOpen, fetchChatRooms]);
+    }, [isOpen]);
 
-    // 메시지 가져오기
-    const fetchMessages = useCallback(async (roomId) => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`/api/chat/messages`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                params: {
-                    userId1: userId,
-                    userId2: roomId,
-                },
-            });
-            setMessages(response.data);
-        } catch (error) {
-            console.error('Error fetching messages', error);
-        }
-    }, [userId]);
-
-// 소켓 연결 설정
-    const connectWebSocket = useCallback(() => {
-        const token = localStorage.getItem('token');
-        const socket = new SockJS(`http://localhost:8080/ws/chat?token=${token}`); // JWT 토큰을 쿼리 파라미터로 전달
-        const stompClient = Stomp.over(socket);
-
-        stompClient.connect(
-            {},
-            () => {
-                console.log('WebSocket connected');
-                stompClient.subscribe(`/topic/chatRoom/${selectedChatRoom.id}`, (message) => {
-                    if (message.body) {
-                        setMessages((prevMessages) => [...prevMessages, JSON.parse(message.body)]);
-                    }
-                });
-            },
-            (error) => {
-                console.error('WebSocket connection error:', error);
-            }
-        );
-
-        stompClientRef.current = stompClient;
-    }, [selectedChatRoom]);
-
-    useEffect(() => {
-        if (selectedChatRoom) {
-            connectWebSocket();
-            fetchMessages(selectedChatRoom.id);
-        }
-    }, [selectedChatRoom, connectWebSocket, fetchMessages]);
-
-    // 새로운 채팅방 생성
-    const createChatRoom = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.post('/api/chat/rooms/email', {
-                userId,
-                recipientEmail,
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            setChatRooms((prevRooms) => [...prevRooms, response.data]);
-            setRecipientEmail('');
-        } catch (error) {
-            console.error('Error creating chat room', error);
-        }
+    const fetchChatRooms = async () => {
+        const userId = localStorage.getItem('userId');
+        const response = await fetch(`/api/chat/rooms/${userId}`);
+        const data = await response.json();
+        setChatRooms(data);
     };
 
-    // 메시지 보내기
-    const handleSendMessage = () => {
-        if (newMessage.trim() && selectedChatRoom) {
-            const message = {
-                chatRoomId: selectedChatRoom.id,
+    const fetchMessages = async (room) => {
+        const userId = localStorage.getItem('userId');
+        const otherUserId = room.members.find((m) => m.id !== parseInt(userId)).id;
+        const response = await fetch(
+            `/api/chat/messages?userId1=${userId}&userId2=${otherUserId}`
+        );
+        const data = await response.json();
+        setMessages(data);
+    };
+
+    const handleChatRoomClick = async (room) => {
+        setSelectedChatRoom(room);
+        await fetchMessages(room);
+    };
+
+    const handleSendMessage = async () => {
+        if (!newMessage.trim()) return;
+
+        const userId = localStorage.getItem('userId');
+        const otherUserId = selectedChatRoom.members.find(
+            (m) => m.id !== parseInt(userId)
+        ).id;
+
+        const response = await fetch('/api/chat/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
                 senderId: userId,
+                recipientId: otherUserId,
                 content: newMessage,
-            };
-            stompClientRef.current.send(`/app/chat/${selectedChatRoom.id}`, {}, JSON.stringify(message));
-            setMessages((prevMessages) => [...prevMessages, { ...message, type: 'outgoing' }]);
-            setNewMessage('');
+            }),
+        });
+
+        if (!response.ok) {
+            console.error('메시지 전송 실패');
+            return;
+        }
+
+        const message = await response.json();
+        setMessages((prev) => [...prev, message]);
+        setNewMessage('');
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSendMessage();
         }
     };
 
     if (!isOpen) return null;
 
     return (
-        <div className="chat-modal-overlay">
-            <div className="chat-modal">
-                <button className="close-button" onClick={onClose}>
-                    &times;
-                </button>
-                <div className="chat-content">
-                    <h2>실시간 채팅</h2>
-                    <div className="chat-rooms">
-                        <h3>채팅방 목록</h3>
+        <div className="chat-modal">
+            <div className="chat-modal-header">
+                {selectedChatRoom ? (
+                    <span onClick={() => setSelectedChatRoom(null)}>← 채팅 목록</span>
+                ) : (
+                    '채팅'
+                )}
+            </div>
+            <div className="chat-modal-body">
+                {selectedChatRoom ? (
+                    <div className="chat-window">
+                        <div className="messages">
+                            {messages.map((msg) => (
+                                <div
+                                    key={msg.id}
+                                    className={`message ${
+                                        msg.senderId === localStorage.getItem('userId')
+                                            ? 'sent'
+                                            : 'received'
+                                    }`}
+                                >
+                                    <div className="bubble">{msg.content}</div>
+                                    <div className="timestamp">
+                                        {new Date(msg.timestamp).toLocaleTimeString()}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="new-chat">
+                            <input
+                                type="text"
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                placeholder="메시지 입력"
+                            />
+                            <button onClick={handleSendMessage}>보내기</button>
+                        </div>
+                    </div>
+                ) : (
+                    <>
                         {chatRooms.map((room) => (
-                            <button key={room.id} onClick={() => setSelectedChatRoom(room)} className="chat-room-button">
-                                채팅방 {room.id}
-                            </button>
-                        ))}
-                    </div>
-                    <div className="create-chat-room">
-                        <input
-                            type="text"
-                            placeholder="이메일로 유저 검색"
-                            value={recipientEmail}
-                            onChange={(e) => setRecipientEmail(e.target.value)}
-                            className="email-input"
-                        />
-                        <button onClick={createChatRoom} className="create-room-button">채팅방 생성</button>
-                    </div>
-                    <div className="messages">
-                        {messages.map((msg, index) => (
-                            <div key={index} className={`message ${msg.type}`}>
-                                <p>{msg.content}</p>
+                            <div
+                                key={room.id}
+                                className="chat-room"
+                                onClick={() => handleChatRoomClick(room)}
+                            >
+                                <div className="profile-img"></div>
+                                <div className="chat-info">
+                                    <div className="room-name">
+                                        {room.members.map((m) => m.email).join(', ')}
+                                    </div>
+                                    <div className="last-message">
+                                        {room.lastMessage || '최근 메시지가 없습니다.'}
+                                    </div>
+                                </div>
                             </div>
                         ))}
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="메시지를 입력하세요..."
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleSendMessage();
-                        }}
-                        className="message-input"
-                    />
-                </div>
+                    </>
+                )}
             </div>
         </div>
     );
