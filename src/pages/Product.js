@@ -2,16 +2,25 @@ import React, {useEffect, useState} from 'react';
 import './Product.css';
 import {Link, useNavigate} from "react-router-dom";
 import LogoutButton from "../components/Logout";
+import {apiClient} from '../api/client';
+import Modal from "../components/Modal";
 
 const Product = () => {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState('All Products');
+  const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
-  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
-  const [error, setError] = useState(null); // 에러 상태 추가
+  const [categories] = useState([
+    "All Products", "dental", "bathroom", "kitchen", "food", "living", "gift"
+  ]);
+  const [activeCategory, setActiveCategory] = useState('All Products');
+  const [temperature, setTemperature] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const productsPerPage = 10;
 
   useEffect(() => {
     const accessToken = localStorage.getItem('token');
@@ -37,47 +46,77 @@ const Product = () => {
     fetchTemperature();
   }, []);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true); // 로딩 상태 시작
+      try {
+        const response = await apiClient.get("/api/products/crawl", {
+          params: {
+            category: activeCategory === "All Products" ? "" : activeCategory,
+            page: currentPage - 1,
+            size: productsPerPage,
+          },
+        });
+
+        // 백엔드 응답에서 content 배열과 totalPages 가져오기
+        const {content, totalPages} = response.data;
+
+        // 가져온 데이터를 설정
+        setProducts(content); // 제품 데이터 저장
+        setTotalPages(totalPages); // 총 페이지 설정
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setError("제품 정보를 가져오는 데 실패했습니다.");
+      } finally {
+        setIsLoading(false); // 로딩 상태 종료
+      }
+    };
+
+    fetchProducts();
+  }, [activeCategory, currentPage]);
+
+  // 카테고리 클릭 핸들러
   const handleCategoryClick = (category) => {
     setActiveCategory(category);
+    setCurrentPage(1); // Reset to first page on category change
   };
 
-  const categories = ['All Products', 'Kitchen', 'Bathroom', 'Personal Care',
-    'Home', 'On-the-go'];
-  const products = [
-    {
-      title: 'Bamboo Utensil Set',
-      description: 'Sustainable bamboo utensil set including fork, knife, spoon, and chopsticks in a cotton carry pouch.',
-      price: '$24.99',
-      badges: ['Plastic-Free', 'Sustainable'],
-    },
-    {
-      title: 'Shampoo Bar',
-      description: 'All-natural shampoo bar with essential oils. Plastic-free packaging, perfect for sustainable hair care.',
-      price: '$12.99',
-      badges: ['Zero-Waste', 'Natural'],
-    },
-    {
-      title: 'Bamboo Toothbrush',
-      description: 'Biodegradable bamboo toothbrush with soft bristles. Comes in plastic-free packaging.',
-      price: '$6.99',
-      badges: ['Biodegradable', 'Eco-Friendly'],
-    },
-  ];
+  // 페이지 변경 핸들러
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  // 로그인 클릭 핸들러
+  const handleLoginClick = (e) => {
+    const accessToken = localStorage.getItem("token");
+    if (accessToken) {
+      setMessage("이미 로그인이 되어있습니다.");
+      setIsModalOpen(true);
+      e.preventDefault();
+    } else {
+      navigate("/login");
+    }
+  };
+
+  if (isLoading) {
+    return <p>제품을 불러오는 중입니다...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   const showMessage = (msg) => {
     setMessage(msg);
     setIsModalOpen(true);
-  };
-
-  const handleLoginClick = (e) => {
-    const accessToken = localStorage.getItem('token');
-    if (accessToken) {
-      setMessage('이미 로그인이 되어있습니다');
-      setIsModalOpen(true);
-      e.preventDefault();
-    } else {
-      navigate('/login');
-    }
   };
 
   return (
@@ -109,14 +148,17 @@ const Product = () => {
           </div>
           <div className="header-right">
             <div className="header-item">
-              {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
+              {isLoading ? '기온 로딩 중...' : error ? error
+                  : `춘천시 기온: ${temperature}`}
             </div>
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login"
+                                  onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>마이페이지</Link>}
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
+            {!isLoggedIn && <Link to="/login"
+                                  onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -148,8 +190,8 @@ const Product = () => {
               {categories.map((category) => (
                   <li key={category}>
                     <button
-                        className={activeCategory === category ? 'active' : ''}
                         onClick={() => handleCategoryClick(category)}
+                        className={activeCategory === category ? "active" : ""}
                     >
                       {category}
                     </button>
@@ -157,37 +199,43 @@ const Product = () => {
               ))}
             </ul>
           </nav>
-
           <div className="products-grid">
-            {products.map((product, index) => (
-                <div className="product-card" key={index}>
-                  <div className="product-image">
-                    <svg
-                        width="100"
-                        height="100"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="white"
-                        strokeWidth="2"
-                    >
-                      <rect x="3" y="3" width="18" height="18" rx="2"/>
-                      <path d="M12 8v8"/>
-                    </svg>
-                  </div>
-                  <div className="product-info">
-                    {product.badges.map((badge, badgeIndex) => (
-                        <span className="eco-badge" key={badgeIndex}>
-                                    {badge}
-                                </span>
-                    ))}
-                    <h3 className="product-title">{product.title}</h3>
-                    <p className="product-description">{product.description}</p>
-                    <div className="product-price">{product.price}</div>
-                  </div>
-                </div>
-            ))}
+            {products.length > 0 ? (
+                products.map((product, index) => (
+                    <div className="product-card" key={index}>
+                      <a href={product.url} target="_blank"
+                         rel="noopener noreferrer">
+                        <div className="product-image">
+                          <img src={product.image || "/placeholder-image.jpg"}
+                               alt={product.name}/>
+                        </div>
+                      </a>
+                      <div className="product-info">
+                        <h3 className="product-title">{product.name
+                            || "상품명 없음"}</h3>
+                        <p className="product-price">{product.price
+                            ? `${product.price.toLocaleString()}원`
+                            : "가격 없음"}</p>
+                        <span className="eco-badge">친환경</span>
+                      </div>
+                    </div>
+                ))
+            ) : (
+                <p>표시할 제품이 없습니다.</p>
+            )}
           </div>
         </div>
+
+        <div className="pagination-buttons">
+          <button onClick={handlePrevPage} disabled={currentPage === 1}>
+            이전
+          </button>
+          <button onClick={handleNextPage} disabled={currentPage >= totalPages}>
+            다음
+          </button>
+        </div>
+        {isModalOpen && <Modal message={message}
+                               onClose={() => setIsModalOpen(false)}/>}
       </div>
   );
 };

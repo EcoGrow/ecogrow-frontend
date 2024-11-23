@@ -38,8 +38,8 @@ const WasteRecord = () => {
   });
   const [trashTypeRecyclableData, setTrashTypeRecyclableData] = useState({
     labels: ['플라스틱 (재활용 가능)', '종이 (재활용 가능)', '유리 (재활용 가능)',
-      '금속 (재활용 가능)', '유기물 (재활용 불가능)',
-      '일반쓰레기 (재활용 불가능)'],
+      '금속 (재활용 가능)', '음식물 쓰레기 (재활용 불가능)',
+      '일반 쓰레기 (재활용 불가능)'],
     datasets: [{
       data: [],
       backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
@@ -178,7 +178,7 @@ const WasteRecord = () => {
           case 'metal':
             recyclableData[3] += amount;
             break;
-          case 'organic':
+          case 'food':
             recyclableData[4] += amount; // Non-Recyclable
             break;
           case 'general':
