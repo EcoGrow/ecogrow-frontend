@@ -226,7 +226,7 @@ const WasteRecord = () => {
   useEffect(() => {
     fetchData(currentPage);
     fetchAllRecords();
-  }, [currentPage, fetchAllRecords]);
+  }, [currentPage]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
