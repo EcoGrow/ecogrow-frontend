@@ -174,9 +174,13 @@ const Product = () => {
                 </svg>
             ))}
           </div>
-          <div>
-            <h1>친환경 제품</h1>
-            <p>친환경 제품 추천</p>
+          <div className="title-setting">
+            <div className="hero-title">
+              <h1>친환경 제품</h1>
+            </div>
+            <div className="hero-description">
+              <p>친환경 제품을 사용해 우리들의 환경을 지킵시다!</p>
+            </div>
           </div>
         </section>
 

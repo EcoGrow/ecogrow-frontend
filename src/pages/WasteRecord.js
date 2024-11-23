@@ -299,9 +299,13 @@ const WasteRecord = () => {
                 </svg>
             ))}
           </div>
-          <div>
-            <h1>쓰레기 기록</h1>
-            <p>내가 쓰레기를 얼마나 버리는지 기록해봅시다!</p>
+          <div className="title-setting">
+            <div className="hero-title">
+              <h1>쓰레기 기록</h1>
+            </div>
+            <div className="hero-description">
+              <p>내가 쓰레기를 얼마나 버리는지 기록해봅시다!</p>
+            </div>
           </div>
         </section>
 
@@ -316,10 +320,13 @@ const WasteRecord = () => {
                   plugins: {
                     title: {
                       display: true,
-                      text: '주간 쓰레기 배출량'
+                      text: '주간 쓰레기 배출량',
+                      font: {
+                        size: 20,
+                        weight: 'bold'
                     }
                   }
-                }}/>
+                }}}/>
               </div>
               <div className="graph-container">
                 <Pie data={trashTypeRecyclableData} options={{
@@ -327,7 +334,11 @@ const WasteRecord = () => {
                   plugins: {
                     title: {
                       display: true,
-                      text: '쓰레기 종류 & 재활용 상태'
+                      text: '쓰레기 종류 & 재활용 상태',
+                      font: {
+                        size: 20,
+                        weight: 'bold'
+                      }
                     }, legend: {position: 'right'}
                   }
                 }}/>
