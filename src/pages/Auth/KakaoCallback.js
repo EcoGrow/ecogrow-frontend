@@ -26,7 +26,13 @@ const KakaoCallback = () => {
         // 성공적인 응답 처리
         if (response.data) {
           console.log('카카오 로그인 성공');
-          localStorage.setItem('token', response.data); // Store JWT token
+
+          const {accessToken, refreshToken, userId} = response.data;
+
+          // 로컬 스토리지에 저장
+          localStorage.setItem('token', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
+          localStorage.setItem('userId', userId);
           navigate('/');
         } else {
           throw new Error(response.data?.msg || '유효한 토큰을 받지 못했습니다');

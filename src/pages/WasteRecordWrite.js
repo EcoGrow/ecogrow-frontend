@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './WasteRecordWrite.css';
 import {Link, useNavigate} from "react-router-dom";
 import LogoutButton from "../components/Logout";
@@ -11,6 +11,7 @@ const WasteRecordWrite = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -22,6 +23,13 @@ const WasteRecordWrite = () => {
       navigate('/login');
     }
   };
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {  // 로그인 상태 체크
+      setIsLoggedIn(true); // 로그인 상태로 설정
+    }
+  }, []);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -83,19 +91,46 @@ const WasteRecordWrite = () => {
     }
   };
 
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   return (
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
-            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
-            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
-            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
+            <Link to="/" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/';
+            }}>EcoGrow</Link>
+            <Link to="/news" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/news';
+            }}>Environmental News</Link>
+            <Link to="/wasteRecord" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/wasteRecord';
+            }}>Record Trash</Link>
+            <Link to="/recycling-tips" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/recycling-tips';
+            }}>Recycling Tips</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
-            <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
-            <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton setMessage={setMessage} />
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
+              Page</Link>}
+            {isLoggedIn && <Link to="/my-page" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/my-page';
+            }}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login"
+                                  onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
         <div className="WRW-content">
@@ -127,7 +162,6 @@ const WasteRecordWrite = () => {
                         <option value="metal">Metal</option>
                         <option value="organic">Organic</option>
                         <option value="general">General</option>
-                        <option value="food">Food</option>
                       </select>
                       <input
                           type="number"
@@ -150,8 +184,6 @@ const WasteRecordWrite = () => {
                         <option value="">Select unit</option>
                         <option value="kg">Kilograms (kg)</option>
                         <option value="g">Grams (g)</option>
-                        <option value="l">Liters (L)</option>
-                        <option value="pieces">Pieces</option>
                       </select>
                       <button type="button" className="trash-entry-remove"
                               onClick={() => removeTrashEntry(index)}>×

@@ -87,22 +87,6 @@
   --primary: #2a6141;
 }
 
-.hero-section {
-  background: linear-gradient(rgba(42, 97, 65, 0.8), rgba(42, 97, 65, 0.9)),
-  url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-  background-size: cover; /* 배경 이미지를 화면에 꽉 차게 설정 */
-  background-position: center; /* 배경 이미지의 중심을 화면 중심으로 설정 */
-  height: 650px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-align: center;
-  margin-top: 60px;
-  position: relative;
-  overflow: hidden;
-}
-
 .floating-leaves {
   position: absolute;
   top: 0;

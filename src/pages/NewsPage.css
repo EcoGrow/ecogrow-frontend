@@ -1,0 +1,124 @@
+.news-content {
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.news-item {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.news-item:hover {
+  transform: translateY(-5px);
+}
+
+.news-image {
+  width: 100%;
+  height: auto;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1rem;
+  border-radius: 8px 8px 0 0;
+}
+
+.news-content {
+  padding: 1rem;
+}
+
+.news-title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.news-page {
+  text-align: center;
+}
+
+.news-description {
+  font-size: 1rem;
+  margin: 1rem;
+  color: #333;
+}
+
+.floating-leaves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.leaf {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  fill: rgba(255, 255, 255, 0.4);
+  animation: float 15s linear infinite;
+}
+
+.leaf:nth-child(2n) {
+  animation-duration: 17s;
+  animation-delay: -5s;
+}
+
+.leaf:nth-child(3n) {
+  animation-duration: 19s;
+  animation-delay: -7s;
+}
+
+.leaf:nth-child(4n) {
+  animation-duration: 21s;
+  animation-delay: -3s;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(100px, -100px) rotate(120deg);
+  }
+  66% {
+    transform: translate(200px, 0) rotate(240deg);
+  }
+  100% {
+    transform: translate(300px, -50px) rotate(360deg);
+  }
+}
+
+.profile-image-container {
+  position: relative;
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.edit-profile-image {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+}

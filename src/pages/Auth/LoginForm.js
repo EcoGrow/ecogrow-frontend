@@ -28,7 +28,6 @@ const LoginForm = ({toggleMode, setMessage, setIsMessageVisible}) => {
   });
   const navigate = useNavigate();
 
-
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -42,25 +41,23 @@ const LoginForm = ({toggleMode, setMessage, setIsMessageVisible}) => {
     try {
       const response = await login(formData);
 
-      if (response.data.data.accessToken) {
+      console.log('로그인 응답:', response);
 
-        const token = response.data.data.accessToken;
-        localStorage.setItem('token', token);
-        console.log('Stored token:', localStorage.getItem('token'));
+      const {accessToken, refreshToken, userId} = response.data.data;
 
-        setMessage('로그인 성공!');
-        console.log('로그인 응답:', response);
-        localStorage.setItem('token', response.data.data.accessToken); // JWT 토큰 저장
-        setIsMessageVisible(true);
-        setTimeout(() => {
-          setIsMessageVisible(false);
-          navigate('/'); // 로그인 성공 시 MainPage로 리디렉션
-        }, 1000);
-      } else {
-        setMessage('로그인 실패. 다시 시도해 주세요.');
-        setIsMessageVisible(true);
-      }
+      // 로컬 스토리지에 저장
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('userId', userId);
+
+      setMessage('로그인 성공!');
+      setIsMessageVisible(true);
+      setTimeout(() => {
+        setIsMessageVisible(false);
+        navigate('/');
+      }, 1000);
     } catch (error) {
+      console.error("Login error:", error);
       setMessage('로그인 실패. 다시 시도해 주세요.');
       setIsMessageVisible(true);
     }

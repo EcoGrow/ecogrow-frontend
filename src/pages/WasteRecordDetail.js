@@ -5,6 +5,7 @@ import LogoutButton from '../components/Logout';
 import Modal from '../components/Modal';
 import {apiClient} from '../api/client';
 import './WasteRecordDetail.css';
+import {useEditable} from './EditableContext';
 
 const WasteRecordDetail = () => {
   const [record, setRecord] = useState(null);
@@ -13,6 +14,8 @@ const WasteRecordDetail = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const {recordId} = useParams(); // Get record ID from URL
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const {updateIsEditable} = useEditable();
 
   const handleLoginClick = (e) => {
     const accessToken = localStorage.getItem('token');
@@ -25,8 +28,30 @@ const WasteRecordDetail = () => {
     }
   };
 
+  useEffect(() => {
+    const accessToken = localStorage.getItem('token');
+    if (accessToken) {  // 로그인 상태 체크
+      setIsLoggedIn(true); // 로그인 상태로 설정
+    }
+  }, []);
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const addTrashEntry = () => {
+    const newEntry = {wasteType: '', amount: '', unit: ''};
+    const updatedItems = [...record.wasteItems, newEntry];
+    setRecord({...record, wasteItems: updatedItems});
+  };
+
+  const removeTrashEntry = (index) => {
+    if (record.wasteItems.length > 1) {
+      const updatedItems = record.wasteItems.filter((_, i) => i !== index);
+      setRecord({...record, wasteItems: updatedItems});
+    } else {
+      alert('최소 한 개의 쓰레기 항목이 필요합니다!');
+    }
   };
 
   const [wasteTypeData, setWasteTypeData] = useState({
@@ -63,7 +88,6 @@ const WasteRecordDetail = () => {
       metal: 0,
       organic: 0,
       general: 0,
-      food: 0
     };
     let recyclableCount = 0;
     let nonRecyclableCount = 0;
@@ -125,28 +149,41 @@ const WasteRecordDetail = () => {
     setEditMode(!editMode);
   };
 
+  const showMessage = (msg) => {
+    setMessage(msg);
+    setIsModalOpen(true);
+  };
+
   const saveChanges = async () => {
+    if (record.wasteItems.some(
+        entry => !entry.wasteType || !entry.amount || !entry.unit)) {
+      alert('모든 쓰레기 항목의 필드를 채워주세요');
+      return;
+    }
+
     try {
       const response = await apiClient.put(`/api/waste/records/${recordId}`,
           record);
       setRecord(response.data.data); // Update the record with the saved changes
       setEditMode(false);
-      alert('Changes saved successfully!');
+      updateIsEditable(record.id, true);
+      alert('기록이 성공적으로 수정되었습니다!');
+      navigate('/WasteRecord');
     } catch (error) {
-      console.error('Error saving changes:', error);
-      alert('Failed to save changes.');
+      console.error('기록 수정 오류 :', error);
+      alert('기록 수정 중 오류가 발생했습니다.');
     }
   };
 
   const deleteRecord = async () => {
-    if (window.confirm('Are you sure you want to delete this record?')) {
+    if (window.confirm('기록을 삭제하시겠습니까?')) {
       try {
         await apiClient.delete(`/api/waste/records/${recordId}`);
-        alert('Record deleted successfully!');
+        alert('기록이 성공적으로 삭제되었습니다!');
         navigate('/wasteRecord'); // Redirect to waste record page after deletion
       } catch (error) {
-        console.error('Error deleting record:', error);
-        alert('Failed to delete record.');
+        console.error('기록 삭제 오류 :', error);
+        alert('기록 삭제 중 오류가 발생했습니다.');
       }
     }
   };
@@ -159,15 +196,37 @@ const WasteRecordDetail = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick = {(e) => {e.preventDefault(); window.location.href = '/';}}>EcoGrow</Link>
-            <Link to="/news" onClick = {(e) => {e.preventDefault(); window.location.href = '/news';}}>Environmental News</Link>
-            <Link to="/wasteRecord" onClick = {(e) => {e.preventDefault(); window.location.href = '/wasteRecord';}}>Record Trash</Link>
-            <Link to="/recycling-tips" onClick = {(e) => {e.preventDefault(); window.location.href = '/recycling-tips';}}>Recycling Tips</Link>
+            <Link to="/" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/';
+            }}>EcoGrow</Link>
+            <Link to="/news" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/news';
+            }}>Environmental News</Link>
+            <Link to="/wasteRecord" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/wasteRecord';
+            }}>Record Trash</Link>
+            <Link to="/recycling-tips" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/recycling-tips';
+            }}>Recycling Tips</Link>
+            <Link to="/product" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/product';
+            }}>Product</Link>
           </div>
           <div className="header-right">
-            <Link to="/my-page" onClick = {(e) => {e.preventDefault(); window.location.href = '/my-page';}}>My Page</Link>
-            <Link to="/login" onClick={handleLoginClick}>Login</Link>
-            <LogoutButton setMessage={setMessage} />
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
+              Page</Link>}
+            {isLoggedIn && <Link to="/my-page" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/my-page';
+            }}>My Page</Link>}
+            {!isLoggedIn && <Link to="/login"
+                                  onClick={handleLoginClick}>Login</Link>}
+            {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
 
@@ -194,8 +253,14 @@ const WasteRecordDetail = () => {
             <div className="record-header">
               <div className="record-metadata">
                 <h4>작성자: {record.username}</h4>
-                <h4>기록 일자: {record.createdAt}</h4>
-                <h4>수정 일자: {record.modifiedAt}</h4>
+                <h4>기록
+                  일자: {new Date(
+                      record.createdAt).toLocaleDateString()} {new Date(
+                      record.createdAt).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                  })}</h4>
               </div>
             </div>
 
@@ -214,6 +279,13 @@ const WasteRecordDetail = () => {
                 )}
 
                 {editMode && (
+                    <button type="button" className="add-entry"
+                            onClick={addTrashEntry}>
+                      + Add New Trash Entry
+                    </button>
+                )}
+
+                {editMode && (
                     record.wasteItems.map((item, index) => (
                         <div key={item.id} className="trash-item-editable">
                           <select
@@ -226,6 +298,7 @@ const WasteRecordDetail = () => {
                                     {...record, wasteItems: updatedItems});
                               }}
                           >
+                            <option value="">Select trash type</option>
                             <option value="plastic">Plastic</option>
                             <option value="paper">Paper</option>
                             <option value="glass">Glass</option>
@@ -243,6 +316,10 @@ const WasteRecordDetail = () => {
                                 setRecord(
                                     {...record, wasteItems: updatedItems});
                               }}
+                              required
+                              min="0"
+                              step="0.1"
+                              placeholder="Amount"
                           />
                           <select
                               className="unit"
@@ -254,11 +331,17 @@ const WasteRecordDetail = () => {
                                     {...record, wasteItems: updatedItems});
                               }}
                           >
+                            <option value="">Select unit</option>
                             <option value="kg">Kilograms (kg)</option>
                             <option value="g">Grams (g)</option>
-                            <option value="l">Liters (L)</option>
-                            <option value="pieces">Pieces</option>
                           </select>
+                          <button
+                              type="button"
+                              className="trash-entry-remove"
+                              onClick={() => removeTrashEntry(index)}
+                          >
+                            ×
+                          </button>
                         </div>
                     ))
                 )}
