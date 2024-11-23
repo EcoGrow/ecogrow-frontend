@@ -401,7 +401,7 @@ const WasteRecord = () => {
                       </Link>
                   ))
               ) : (
-                  <p>No records found.</p>
+                  <p>쓰레기를 찾을 수 없습니다.</p>
               )}
             </div>
 

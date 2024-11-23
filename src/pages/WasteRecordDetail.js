@@ -252,7 +252,7 @@ const WasteRecordDetail = () => {
         </header>
 
         <main className="WRD-content">
-          <h1>{record.username}의 기록</h1>
+          <h1>{record.username}님의 기록</h1>
 
           <div className="chart-banner">
 
