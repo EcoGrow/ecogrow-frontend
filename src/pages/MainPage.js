@@ -232,6 +232,7 @@ const MainPage = () => {
           </button>
         </section>
         {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
+
         <FloatingButton onClick={handleFloatingButtonClick}/>
         <ChatModal isOpen={isChatOpen} onClose={toggleChatModal}/>
       </div>
