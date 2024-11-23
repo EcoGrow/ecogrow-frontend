@@ -186,7 +186,7 @@ const MyPage = () => {
       paper: 0,
       glass: 0,
       metal: 0,
-      organic: 0,
+      food: 0,
       general: 0,
     };
     let recyclable = 0;
@@ -438,8 +438,8 @@ const MyPage = () => {
                   <option value="paper">종이</option>
                   <option value="glass">유리</option>
                   <option value="metal">금속</option>
-                  <option value="organic">유기 폐기물</option>
-                  <option value="general">일반쓰레기</option>
+                  <option value="food">음식물 쓰레기</option>
+                  <option value="general">일반 쓰레기</option>
                 </select>
               </label>
               <label className="date-label">

@@ -184,8 +184,8 @@ const WasteRecordWrite = () => {
                         <option value="paper">종이</option>
                         <option value="glass">유리</option>
                         <option value="metal">금속</option>
-                        <option value="organic">유기물</option>
-                        <option value="general">일반쓰레기</option>
+                        <option value="food">음식물 쓰레기</option>
+                        <option value="general">일반 쓰레기</option>
                       </select>
                       <input
                           type="number"

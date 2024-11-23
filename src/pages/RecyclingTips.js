@@ -253,28 +253,6 @@ const RecyclingTips = () => {
                 </div>
               </div>
 
-            {/* Organic Waste */}
-            <div className="tips-section">
-              <div className="tip-card">
-                <div className="tip-card-content">
-                <div className="tip-header">
-                        <h2 className="tip-category">👉 유기 폐기물</h2>
-                      </div>
-                      <ul className="tip-list">
-                        <li>야외 쓰레기통을 위한 퇴비통을 시작하세요</li>
-                        <li>녹색 및 갈색 재료를 층층이 쌓으세요</li>
-                        <li>퇴비를 촉촉하게 유지하되 젖지 않게 하세요</li>
-                        <li>퇴비를 주기적으로 뒤집어 주세요</li>
-                        <li>가정 퇴비화에서는 고기와 유제품을 피하세요</li>
-                      </ul>
-                      <svg className="tip-icon" viewBox="0 0 24 24">
-                        <path
-                            d="M7,3A4,4 0 0,1 11,7A4,4 0 0,1 7,11A4,4 0 0,1 3,7A4,4 0 0,1 7,3M7,5A2,2 0 0,0 5,7A2,2 0 0,0 7,9A2,2 0 0,0 9,7A2,2 0 0,0 7,5M17,3A4,4 0 0,1 21,7A4,4 0 0,1 17,11A4,4 0 0,1 13,7A4,4 0 0,1 17,3M17,5A2,2 0 0,0 15,7A2,2 0 0,0 17,9A2,2 0 0,0 19,7A2,2 0 0,0 17,5Z"/>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
             {/* Food Waste */}
             <div className="tips-section">
               <div className="tip-card">
