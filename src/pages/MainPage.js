@@ -221,16 +221,30 @@ const MainPage = () => {
         </section>
 
         <section className="content-section visible">
+          <img src="https://cdn-icons-png.flaticon.com/512/9947/9947458.png"
+               alt="News Icon"
+               className="ficon"/>
+          <h2 className="hero">친환경 제품 추천</h2>
+          <p className="sub-hero">친환경 제품을 사용해 우리들의 환경을 지킵시다!</p>
+          <button className="cta-button"
+                  onClick={() => {
+                    navigate('/product');
+                    window.location.reload();
+                  }}>친환경 제품 구매하러 가기
+          </button>
+        </section>
+
+        <section className="content-section visible">
           <img src="/images/free-icon-arcade-machine-4176434.png"
                alt="News Icon"
                className="ficon"/>
           <h2 className="hero2">분리수거 게임</h2>
           <p className="sub-hero2">분리수거 게임을 통해 분리수거의 재미를 느껴보세요!</p>
           <button className="cta-button"
-                  onClick={() => window.location.href = "https://seokyeongeol.github.io/RecyclingGame/"}>게임
-            하러가기
+                  onClick={() => window.location.href = "https://seokyeongeol.github.io/RecyclingGame/"}>게임 하러가기
           </button>
         </section>
+
         {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
         <FloatingButton onClick={handleFloatingButtonClick}/>
         <ChatModal isOpen={isChatOpen} onClose={toggleChatModal}/>

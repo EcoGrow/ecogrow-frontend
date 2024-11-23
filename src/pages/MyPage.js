@@ -352,9 +352,13 @@ const MyPage = () => {
                 </svg>
             ))}
           </div>
-          <div>
-            <h1>나의 프로필</h1>
-            <p>폐기물을 줄이고 재활용을 통해 지구를 보호합시다!</p>
+          <div className="title-setting">
+            <div className="hero-title">
+              <h1>나의 프로필</h1>
+            </div>
+            <div className="hero-description">
+              <p>폐기물을 줄이고 재활용을 통해 지구를 보호합시다!</p>
+            </div>
           </div>
         </section>
 

@@ -153,9 +153,13 @@ const NewsPage = () => {
                 </svg>
             ))}
           </div>
-          <div>
-            <h1>환경 뉴스</h1>
-            <p>환경뉴스를 통해 현재의 환경 이슈를 알아봅시다!</p>
+          <div className="title-setting">
+            <div className="hero-title">
+              <h1>환경 뉴스</h1>
+            </div>
+            <div className="hero-description">
+              <p>환경뉴스를 통해 현재의 환경 이슈를 알아봅시다!</p>
+            </div>
           </div>
         </section>
 
