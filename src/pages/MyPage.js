@@ -7,6 +7,7 @@ import LogoutButton from "../components/Logout";
 import {apiClient} from '../api/client';
 
 const MyPage = () => {
+  const [userName, setUserName] = useState('');
   const [entries, setEntries] = useState([]);
   const [todayData, setTodayData] = useState({});
   const [trashTypeData, setTrashTypeData] = useState({});
@@ -44,6 +45,23 @@ const MyPage = () => {
       setIsLoggedIn(true); // 로그인 상태로 설정
     }
   }, []);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await apiClient.get(`/api/waste/records/${userId}`);
+        const userData = response.data.data;
+        setUserName(userData.username || "사용자"); // 사용자 이름을 상태에 설정
+      } catch (error) {
+        console.error('유저 정보를 가져오는 데 실패했습니다:', error);
+        setUserName("사용자");
+      }
+    };
+
+    if (userId) {
+      fetchUserInfo();
+    }
+  }, [userId]);
 
   useEffect(() => {
     const fetchTemperature = async () => {
@@ -379,16 +397,22 @@ const MyPage = () => {
               <div className="profile-header">
                 <div className="profile-image-container">
                   <h3>나의 프로필</h3>
-                  <img id="profileImage" src="https://via.placeholder.com/150"
+                  <img id="profileImage"
+                       src="https://github.com/EcoGrow/ecogrow-frontend/blob/feat/FeatureModification/free-icon-person-2815428.png?raw=true"
                        alt="Profile" className="profile-image"/>
-                  <button className="edit-profile-image">사진 수정</button>
+                  {/*<button className="edit-profile-image">사진 수정</button>*/}
                   <input type="file" id="profileImageInput" hidden
                          accept="image/*" onChange={handleProfileImageUpload}/>
                 </div>
                 <div className="profile-info">
-                  <h3 id="userName">유저 이름</h3>
+                  <div className="user-name">
+                    <h3>{userName}</h3>
+                  </div>
                   <button className="edit-profile-btn">프로필 수정</button>
                 </div>
+                <img id="profileImage"
+                     src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/439baf3541f9bf9f0435db0e6c4e7e31b8d1a721/public/ecogrow.png"
+                     alt="Profile" className="profile-logo"/>
               </div>
             </div>
           </div>
