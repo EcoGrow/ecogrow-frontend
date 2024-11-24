@@ -78,3 +78,35 @@
     color: #888;
     margin-top: 5px;
 }
+
+.new-chat {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background-color: white;
+    position: sticky;
+    bottom: 0;
+}
+
+.new-chat input {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.new-chat button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.new-chat button:hover {
+    background-color: #0056b3;
+}

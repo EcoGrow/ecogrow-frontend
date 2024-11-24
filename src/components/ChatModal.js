@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ChatModal.css';
 
 const ChatModal = ({ isOpen, onClose }) => {
@@ -7,6 +7,7 @@ const ChatModal = ({ isOpen, onClose }) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [searchEmail, setSearchEmail] = useState('');
+    const messagesContainerRef = useRef(null);
 
     useEffect(() => {
         if (isOpen) {
@@ -68,7 +69,10 @@ const ChatModal = ({ isOpen, onClose }) => {
             }
 
             const message = await response.json();
-            setMessages((prev) => [...prev, message]);
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { ...message, senderId: userId }
+            ]);
             setNewMessage('');
         } catch (error) {
             console.error('메시지 전송 중 오류 발생:', error);
@@ -103,6 +107,13 @@ const ChatModal = ({ isOpen, onClose }) => {
             handleSendMessage();
         }
     };
+
+    useEffect(() => {
+        const scrollToBottom = () => {
+            messagesContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+        };
+        scrollToBottom();
+    }, [messages]);
 
     if (!isOpen) return null;
 
@@ -139,11 +150,17 @@ const ChatModal = ({ isOpen, onClose }) => {
                                                 {msg.content}
                                             </div>
                                             <div className="timestamp">
-                                                {new Date(msg.timestamp).toLocaleTimeString()}
+                                                {msg.timestamp
+                                                    ? new Date(msg.timestamp).toLocaleTimeString([], {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                    })
+                                                    : '시간 정보 없음'}
                                             </div>
                                         </div>
                                     );
                                 })}
+                                <div ref={messagesContainerRef}></div>
                             </div>
                             <div className="new-chat">
                                 <input
@@ -153,7 +170,7 @@ const ChatModal = ({ isOpen, onClose }) => {
                                     onKeyDown={handleKeyDown}
                                     placeholder="메시지 입력"
                                 />
-                                <button onClick={handleSendMessage}>보내기</button>
+                                <button onClick={handleSendMessage}>전송</button>
                             </div>
                         </div>
                     ) : (
