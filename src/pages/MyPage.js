@@ -286,8 +286,11 @@ const MyPage = () => {
       options: {
         responsive: true,
         plugins: {
-          legend: { display: false },
+          legend: { display: true },
           tooltip: { enabled: true },
+        },
+        animation: {
+          duration: 1000,
         },
       },
     });
