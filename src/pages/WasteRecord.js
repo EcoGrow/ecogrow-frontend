@@ -29,7 +29,7 @@ const WasteRecord = () => {
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['1주차', '2주차', '3주차', '4주차'], // adjust as needed
     datasets: [{
-      label: '이번 달 쓰레기 (kg)',
+      label: '이번 주 쓰레기 (kg)',
       data: [],
       backgroundColor: 'rgba(75, 192, 192, 0.6)',
       borderColor: 'rgba(75, 192, 192, 1)',

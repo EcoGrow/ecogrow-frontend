@@ -28,7 +28,7 @@ const MyPage = () => {
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['1주차', '2주차', '3주차', '4주차'], // adjust as needed
     datasets: [{
-      label: '이번 달 쓰레기 (kg)',
+      label: '이번 주 쓰레기 (kg)',
       data: [],
       backgroundColor: 'rgba(75, 192, 192, 0.6)',
       borderColor: 'rgba(75, 192, 192, 1)',
@@ -396,11 +396,11 @@ const MyPage = () => {
             <div className="profile-card">
               <div className="profile-header">
                 <div className="profile-image-container">
-                  <h3>나의 프로필</h3>
+                  <h3>🌎 {userName}의 프로필</h3>
                   <img id="profileImage"
                        src="https://github.com/EcoGrow/ecogrow-frontend/blob/feat/FeatureModification/free-icon-person-2815428.png?raw=true"
                        alt="Profile" className="profile-image"/>
-                  {/*<button className="edit-profile-image">사진 수정</button>*/}
+                  <button className="edit-profile-image">사진 수정</button>
                   <input type="file" id="profileImageInput" hidden
                          accept="image/*" onChange={handleProfileImageUpload}/>
                 </div>
