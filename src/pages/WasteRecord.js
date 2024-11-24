@@ -158,7 +158,7 @@ const WasteRecord = () => {
     let recyclableData = [0, 0, 0, 0, 0, 0, 0];
 
     records.forEach((record) => {
-      const weekIndex = new Date(record.createdAt).getDate() % 4;
+      const weekIndex = Math.floor((new Date(record.createdAt).getDate() -1) / 7);
 
       record.wasteItems.forEach((item) => {
         const amount = item.amount || 0;

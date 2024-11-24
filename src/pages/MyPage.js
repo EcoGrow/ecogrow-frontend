@@ -186,7 +186,6 @@ const MyPage = () => {
 
   const handleSortChange = (e) => setSortOption(e.target.value);
   const handleDateChange = (setter) => (e) => setter(e.target.value);
-  const handleTrashTypeChange = (e) => setSelectedTrashType(e.target.value);
 
   const handleResetDateFilter = () => {
     setStartDate('');
@@ -447,7 +446,7 @@ const MyPage = () => {
                       <p key={index}>{tip.tips}</p>
                   ))
               ) : (
-                  <p>No personalized tips available.</p>
+                  <p>기준치를 넘지 않아 표시할 감소 팁이 없습니다.</p>
               )}
             </div>
           </section>
