@@ -49,7 +49,7 @@ https://docs.google.com/document/d/1TwYGpixl2F0x2VR9XR31Se2Bs0SiQ6iTBjHi4AA-Hdw/
 
 ## 🖥 ERD 다이어그램 
 
-![image](https://github.com/user-attachments/assets/82696597-f2f5-45cc-8ef7-b8f38fd9ae2d)
+![image](https://github.com/user-attachments/assets/d65cc716-80af-4621-838c-60252d8abb98)
 
 <br>
 
