@@ -49,9 +49,7 @@ https://docs.google.com/document/d/1TwYGpixl2F0x2VR9XR31Se2Bs0SiQ6iTBjHi4AA-Hdw/
 
 ## 🖥 ERD 다이어그램 
 
-- 추후 개선 예정
-
-![image](https://github.com/user-attachments/assets/55bb248a-2844-481e-9ffd-1b1f4934e665)
+![image](https://github.com/user-attachments/assets/82696597-f2f5-45cc-8ef7-b8f38fd9ae2d)
 
 <br>
 
