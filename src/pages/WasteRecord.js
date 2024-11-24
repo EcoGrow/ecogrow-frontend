@@ -29,7 +29,7 @@ const WasteRecord = () => {
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['1주차', '2주차', '3주차', '4주차'], // adjust as needed
     datasets: [{
-      label: '주간 쓰레기 (kg)',
+      label: '이번 달 쓰레기 (kg)',
       data: [],
       backgroundColor: 'rgba(75, 192, 192, 0.6)',
       borderColor: 'rgba(75, 192, 192, 1)',
@@ -226,7 +226,7 @@ const WasteRecord = () => {
   useEffect(() => {
     fetchData(currentPage);
     fetchAllRecords();
-  }, [currentPage, fetchAllRecords]);
+  }, [currentPage]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -320,7 +320,7 @@ const WasteRecord = () => {
                   plugins: {
                     title: {
                       display: true,
-                      text: '주간 쓰레기 배출량',
+                      text: '이번 달 쓰레기 배출량',
                       font: {
                         size: 20,
                         weight: 'bold'
