@@ -8,12 +8,27 @@ const ChatModal = ({ isOpen, onClose }) => {
     const [newMessage, setNewMessage] = useState('');
     const [searchEmail, setSearchEmail] = useState('');
     const messagesContainerRef = useRef(null);
+    const [currentUser, setCurrentUser] = useState(null);
 
     useEffect(() => {
         if (isOpen) {
+            fetchCurrentUser();
             fetchChatRooms();
         }
     }, [isOpen]);
+
+    const fetchCurrentUser = async () => {
+        try {
+            const userId = parseInt(localStorage.getItem('userId'),10);
+            if (!userId) {
+                console.error('사용자 ID가 없습니다.');
+                return;
+            }
+            setCurrentUser(userId);
+        } catch (error) {
+            console.error('현재 사용자 정보를 불러오는 중 오류 발생:', error);
+        }
+    };
 
     const fetchChatRooms = async () => {
         const userId = localStorage.getItem('userId');
@@ -127,7 +142,7 @@ const ChatModal = ({ isOpen, onClose }) => {
                     ) : (
                         '채팅'
                     )}
-                    <button onClick={onClose}>닫기</button>
+                    <button onClick={onClose}>x</button>
                 </div>
                 <div className="chat-modal-body">
                     {selectedChatRoom ? (
@@ -184,23 +199,35 @@ const ChatModal = ({ isOpen, onClose }) => {
                                 />
                                 <button onClick={handleCreateChatRoom}>채팅방 생성</button>
                             </div>
-                            {chatRooms.map((room) => (
-                                <div
-                                    key={room.id}
-                                    className="chat-room"
-                                    onClick={() => handleChatRoomClick(room)}
-                                >
-                                    <div className="profile-img"></div>
-                                    <div className="chat-info">
-                                        <div className="room-name">
-                                            {room.members.map((m) => m.email).join(', ')}
-                                        </div>
-                                        <div className="last-message">
-                                            {room.lastMessage || '최근 메시지가 없습니다.'}
+                            {currentUser && chatRooms.map((room) => {
+                                // 상대방만 필터링 (현재 사용자 제외)
+                                const otherUser = room.members.find((m) => m.id !== currentUser);
+
+                                return (
+                                    <div
+                                        key={room.id}
+                                        className="chat-room"
+                                        onClick={() => handleChatRoomClick(room)}
+                                    >
+                                        <div className="chat-info">
+                                            <img
+                                                id="profileImage"
+                                                src="https://github.com/EcoGrow/ecogrow-frontend/blob/feat/FeatureModification/free-icon-person-2815428.png?raw=true"
+                                                alt="Profile"
+                                                className="profile-img"
+                                            />
+                                            <div className="email-message-container">
+                                                <div className="email-position">
+                                                    {otherUser ? otherUser.username : '이름 없음'} {/* 상대방 이름 */}
+                                                </div>
+                                                <div className="last-message">
+                                                    {room.lastMessage || '최근 메시지가 없습니다.'} {/* 최근 메시지 */}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </div>

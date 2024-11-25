@@ -110,3 +110,38 @@
 .new-chat button:hover {
     background-color: #0056b3;
 }
+
+.profile-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #2965ff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    margin-left: 3px;
+}
+
+.chat-info {
+    display: flex; /* Flexbox 레이아웃 */
+    align-items: center; /* 이미지와 텍스트 수직 정렬 */
+    gap: 10px; /* 이미지와 텍스트 사이 여백 */
+    padding: 10px;
+}
+
+.email-message-container {
+    display: flex;
+    flex-direction: column; /* 이메일과 메시지 세로 정렬 */
+    justify-content: center;
+}
+
+.email-position {
+    font-weight: bold; /* 이메일 강조 */
+    font-size: 14px;
+    color: #333;
+}
+
+.last-message {
+    font-size: 12px; /* 메시지 크기 */
+    color: #666; /* 덜 강조된 색상 */
+}
