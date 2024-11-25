@@ -7,10 +7,9 @@ import LogoutButton from "../components/Logout";
 import {apiClient} from '../api/client';
 
 const MyPage = () => {
+  const [userName, setUserName] = useState('');
   const [entries, setEntries] = useState([]);
   const [todayData, setTodayData] = useState({});
-  const [weeklyData, setWeeklyData] = useState({});
-  const [monthlyData, setMonthlyData] = useState({});
   const [trashTypeData, setTrashTypeData] = useState({});
   const [recyclableData, setRecyclableData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,6 +25,16 @@ const MyPage = () => {
   const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const [error, setError] = useState(null); // 에러 상태 추가
+  const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
+    labels: ['1주차', '2주차', '3주차', '4주차'], // adjust as needed
+    datasets: [{
+      label: '이번 주 쓰레기 (kg)',
+      data: [],
+      backgroundColor: 'rgba(75, 192, 192, 0.6)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1
+    }]
+  });
 
   const userId = localStorage.getItem('userId');
   console.log("userId :", userId)
@@ -36,6 +45,23 @@ const MyPage = () => {
       setIsLoggedIn(true); // 로그인 상태로 설정
     }
   }, []);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await apiClient.get(`/api/waste/records/${userId}`);
+        const userData = response.data.data;
+        setUserName(userData.username || "사용자"); // 사용자 이름을 상태에 설정
+      } catch (error) {
+        console.error('유저 정보를 가져오는 데 실패했습니다:', error);
+        setUserName("사용자");
+      }
+    };
+
+    if (userId) {
+      fetchUserInfo();
+    }
+  }, [userId]);
 
   useEffect(() => {
     const fetchTemperature = async () => {
@@ -160,7 +186,6 @@ const MyPage = () => {
 
   const handleSortChange = (e) => setSortOption(e.target.value);
   const handleDateChange = (setter) => (e) => setter(e.target.value);
-  const handleTrashTypeChange = (e) => setSelectedTrashType(e.target.value);
 
   const handleResetDateFilter = () => {
     setStartDate('');
@@ -169,18 +194,11 @@ const MyPage = () => {
 
   const categorizeRecords = (records) => {
     const today = new Date();
-    const todayStart = new Date(today).setHours(0, 0, 0, 0);
-    const oneWeekAgo = new Date(today);
-    oneWeekAgo.setDate(today.getDate() - 7);
-    oneWeekAgo.setHours(0, 0, 0, 0);
-
-    const oneMonthAgo = new Date(today);
-    oneMonthAgo.setMonth(today.getMonth() - 1);
-    oneMonthAgo.setHours(0, 0, 0, 0);
+    const todayStart = new Date(today.setHours(0, 0, 0, 0)); // 자정을 기준으로
+    const currentMonth = today.getMonth();
+    const weeklyMonthlyRecords = [0, 0, 0, 0]; // 1~4주 데이터
 
     let todayRecords = [];
-    let weeklyRecords = [];
-    let monthlyRecords = [];
     let trashTypeCounts = {
       plastic: 0,
       paper: 0,
@@ -193,15 +211,25 @@ const MyPage = () => {
     let nonRecyclable = 0;
 
     records.forEach((record) => {
-      const recordDate = new Date(record.createdAt).setHours(0, 0, 0, 0);
+      // record.createdAt을 Date 객체로 변환
+      const recordDateObj = new Date(record.createdAt);
+      if (isNaN(recordDateObj.getTime())) {
+        console.error(`Invalid date format: ${record.createdAt}`);
+        return;
+      }
+      const recordDate = new Date(recordDateObj.setHours(0, 0, 0, 0));
+      const recordMonth = recordDate.getMonth();
 
       // Categorize records by date
-      if (recordDate === todayStart) {
+      if (recordDate.getTime() === todayStart.getTime()) {
         todayRecords.push(record);
-      } else if (recordDate >= oneWeekAgo) {
-        weeklyRecords.push(record);
-      } else if (recordDate >= oneMonthAgo) {
-        monthlyRecords.push(record);
+      }
+
+      if (recordMonth === currentMonth) {
+        const weekIndex = Math.floor((recordDate.getDate() - 1) / 7); // 주차 계산
+        record.wasteItems.forEach((item) => {
+          weeklyMonthlyRecords[weekIndex] += item.amount || 0; // 주차별 합산
+        });
       }
 
       record.wasteItems.forEach((item) => {
@@ -217,30 +245,30 @@ const MyPage = () => {
     // Update chart data
     setTodayData({
       labels: ['일간'],
-      datasets: [{data: [todayRecords.length], borderWidth: 1}]
+      datasets: [{ data: [todayRecords.length], borderWidth: 1 }],
     });
 
-    setWeeklyData({
-      labels: ['주간'],
-      datasets: [{data: [weeklyRecords.length], borderWidth: 1}]
-    });
-
-    setMonthlyData({
-      labels: ['월간'],
-      datasets: [{data: [monthlyRecords.length], borderWidth: 1}]
-    });
+    setWeeklyMonthlyData((prevData) => ({
+      ...prevData,
+      datasets: [{ ...prevData.datasets[0], data: weeklyMonthlyRecords }],
+    }));
 
     setTrashTypeData({
       labels: Object.keys(trashTypeCounts),
-      datasets: [{data: Object.values(trashTypeCounts), borderWidth: 1}]
+      datasets: [{ data: Object.values(trashTypeCounts), borderWidth: 1 }],
     });
 
     setRecyclableData({
       labels: ['재활용 가능', '재활용 불가능'],
-      datasets: [{
-        data: [recyclable, nonRecyclable],
-        backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
-      }]
+      datasets: [
+        {
+          data: [recyclable, nonRecyclable],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+          ],
+        },
+      ],
     });
   };
 
@@ -251,16 +279,20 @@ const MyPage = () => {
       data: todayData
     });
 
-    const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
+    const ctxWeekly = document.getElementById('weeklyMonthlyChart').getContext('2d');
     new Chart(ctxWeekly, {
       type: 'bar',
-      data: weeklyData
-    });
-
-    const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
-    new Chart(ctxMonthly, {
-      type: 'bar',
-      data: monthlyData
+      data: weeklyMonthlyData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true },
+          tooltip: { enabled: true },
+        },
+        animation: {
+          duration: 1000,
+        },
+      },
     });
 
     const wasteTypeCtx = document.getElementById('wasteTypeChart').getContext(
@@ -279,12 +311,11 @@ const MyPage = () => {
   };
 
   useEffect(() => {
-    if (Object.keys(todayData).length && Object.keys(weeklyData).length
-        && Object.keys(monthlyData).length && Object.keys(trashTypeData).length
-        && Object.keys(recyclableData).length) {
+    if (Object.keys(todayData).length && Object.keys(weeklyMonthlyData).length
+        && Object.keys(trashTypeData).length && Object.keys(recyclableData).length) {
       initializeCharts();
     }
-  }, [todayData, weeklyData, monthlyData, trashTypeData, recyclableData]);
+  }, [todayData, weeklyMonthlyData, trashTypeData, recyclableData]);
 
   const handleProfileImageUpload = (event) => {
     const file = event.target.files[0];
@@ -367,17 +398,23 @@ const MyPage = () => {
             <div className="profile-card">
               <div className="profile-header">
                 <div className="profile-image-container">
-                  <h3>나의 프로필</h3>
-                  <img id="profileImage" src="https://via.placeholder.com/150"
+                  <h3>🌎 {userName}의 프로필</h3>
+                  <img id="profileImage"
+                       src="https://github.com/EcoGrow/ecogrow-frontend/blob/feat/FeatureModification/free-icon-person-2815428.png?raw=true"
                        alt="Profile" className="profile-image"/>
                   <button className="edit-profile-image">사진 수정</button>
                   <input type="file" id="profileImageInput" hidden
                          accept="image/*" onChange={handleProfileImageUpload}/>
                 </div>
                 <div className="profile-info">
-                  <h3 id="userName">유저 이름</h3>
+                  <div className="user-name">
+                    <h3>{userName}</h3>
+                  </div>
                   <button className="edit-profile-btn">프로필 수정</button>
                 </div>
+                <img id="profileImage"
+                     src="https://raw.githubusercontent.com/EcoGrow/ecogrow-frontend/439baf3541f9bf9f0435db0e6c4e7e31b8d1a721/public/ecogrow.png"
+                     alt="Profile" className="profile-logo"/>
               </div>
             </div>
           </div>
@@ -388,12 +425,8 @@ const MyPage = () => {
               <canvas id="todayChart"></canvas>
             </div>
             <div className="stat-card">
-              <h3>주간 요약</h3>
-              <canvas id="weeklyChart"></canvas>
-            </div>
-            <div className="stat-card">
-              <h3>월별 개요</h3>
-              <canvas id="monthlyChart"></canvas>
+              <h3>이번 달 요약</h3>
+              <canvas id="weeklyMonthlyChart"></canvas>
             </div>
           </div>
 
@@ -416,7 +449,7 @@ const MyPage = () => {
                       <p key={index}>{tip.tips}</p>
                   ))
               ) : (
-                  <p>No personalized tips available.</p>
+                  <p>기준치를 넘지 않아 표시할 감소 팁이 없습니다.</p>
               )}
             </div>
           </section>

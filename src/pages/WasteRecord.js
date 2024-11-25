@@ -29,7 +29,7 @@ const WasteRecord = () => {
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
     labels: ['1주차', '2주차', '3주차', '4주차'], // adjust as needed
     datasets: [{
-      label: '주간 쓰레기 (kg)',
+      label: '이번 주 쓰레기 (kg)',
       data: [],
       backgroundColor: 'rgba(75, 192, 192, 0.6)',
       borderColor: 'rgba(75, 192, 192, 1)',
@@ -158,7 +158,7 @@ const WasteRecord = () => {
     let recyclableData = [0, 0, 0, 0, 0, 0, 0];
 
     records.forEach((record) => {
-      const weekIndex = new Date(record.createdAt).getDate() % 4;
+      const weekIndex = Math.floor((new Date(record.createdAt).getDate() -1) / 7);
 
       record.wasteItems.forEach((item) => {
         const amount = item.amount || 0;
@@ -278,17 +278,14 @@ const WasteRecord = () => {
           </div>
           <div className="header-right">
             <div className="header-item">
-              {isLoading ? '기온 로딩 중...' : error ? error
-                  : `춘천시 기온: ${temperature}`}
+              {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
             </div>
-            {!isLoggedIn && <Link to="/login"
-                                  onClick={handleLoginClick}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
             }}>마이페이지</Link>}
-            {!isLoggedIn && <Link to="/login"
-                                  onClick={handleLoginClick}>로그인</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -326,7 +323,7 @@ const WasteRecord = () => {
                   plugins: {
                     title: {
                       display: true,
-                      text: '주간 쓰레기 배출량',
+                      text: '이번 달 쓰레기 배출량',
                       font: {
                         size: 20,
                         weight: 'bold'
@@ -408,7 +405,7 @@ const WasteRecord = () => {
                       </Link>
                   ))
               ) : (
-                  <p>No records found.</p>
+                  <p>쓰레기를 찾을 수 없습니다.</p>
               )}
             </div>
 
