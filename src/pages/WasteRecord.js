@@ -22,11 +22,14 @@ const WasteRecord = () => {
   const recordsPerPage = 8;
   const [allRecords, setAllRecords] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
-  const {editableStates} = useEditable();   // 수정됐는지 확인
+  const { editableStates } = useEditable();   // 수정됐는지 확인
+  const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [error, setError] = useState(null); // 에러 상태 추가
   const [weeklyMonthlyData, setWeeklyMonthlyData] = useState({
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // adjust as needed
+    labels: ['1주차', '2주차', '3주차', '4주차'], // adjust as needed
     datasets: [{
-      label: 'Weekly Waste (kg)',
+      label: '이번 주 쓰레기 (kg)',
       data: [],
       backgroundColor: 'rgba(75, 192, 192, 0.6)',
       borderColor: 'rgba(75, 192, 192, 1)',
@@ -34,9 +37,9 @@ const WasteRecord = () => {
     }]
   });
   const [trashTypeRecyclableData, setTrashTypeRecyclableData] = useState({
-    labels: ['Plastic (Recyclable)', 'Paper (Recyclable)', 'Glass (Recyclable)',
-      'Metal (Recyclable)', 'Organic (Non-Recyclable)',
-      'General Waste (Non-Recyclable)'],
+    labels: ['플라스틱 (재활용 가능)', '종이 (재활용 가능)', '유리 (재활용 가능)',
+      '금속 (재활용 가능)', '음식물 쓰레기 (재활용 불가능)',
+      '일반 쓰레기 (재활용 불가능)'],
     datasets: [{
       data: [],
       backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
@@ -72,6 +75,23 @@ const WasteRecord = () => {
     if (accessToken) {  // 로그인 상태 체크
       setIsLoggedIn(true); // 로그인 상태로 설정
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchTemperature = async () => {
+      try {
+        const response = await fetch('/api/weather/temperature');
+        const data = await response.text();
+        setTemperature(data);
+        setIsLoading(false); // 로딩 종료
+      } catch (error) {
+        console.error("Failed to fetch temperature:", error);
+        setTemperature("데이터 없음");
+        setError("기온 정보를 가져오는 데 실패했습니다.");
+        setIsLoading(false); // 로딩 종료
+      }
+    };
+    fetchTemperature();
   }, []);
 
   const handleLoginClick = (e) => {
@@ -138,7 +158,7 @@ const WasteRecord = () => {
     let recyclableData = [0, 0, 0, 0, 0, 0, 0];
 
     records.forEach((record) => {
-      const weekIndex = new Date(record.createdAt).getDate() % 4;
+      const weekIndex = Math.floor((new Date(record.createdAt).getDate() -1) / 7);
 
       record.wasteItems.forEach((item) => {
         const amount = item.amount || 0;
@@ -158,7 +178,7 @@ const WasteRecord = () => {
           case 'metal':
             recyclableData[3] += amount;
             break;
-          case 'organic':
+          case 'food':
             recyclableData[4] += amount; // Non-Recyclable
             break;
           case 'general':
@@ -203,11 +223,10 @@ const WasteRecord = () => {
     }
   };
 
-  // 페이지네이션을 위한 현재 페이지에 해당하는 레코드
   useEffect(() => {
     fetchData(currentPage);
     fetchAllRecords();
-  }, [currentPage, fetchAllRecords]);
+  }, [currentPage]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -231,36 +250,39 @@ const WasteRecord = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick={(e) => {
-              e.preventDefault();
-              window.location.href = '/';
-            }}>EcoGrow</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}>EcoGrow</Link>
+            </div>
             <Link to="/news" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/news';
-            }}>Environmental News</Link>
+            }}>환경 뉴스</Link>
             <Link to="/wasteRecord" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/wasteRecord';
-            }}>Record Trash</Link>
+            }}>쓰레기 기록</Link>
             <Link to="/recycling-tips" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
-            }}>Recycling Tips</Link>
+            }}>재활용 팁</Link>
             <Link to="/product" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/product';
-            }}>Product</Link>
+            }}>친환경 제품</Link>
           </div>
           <div className="header-right">
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
-              Page</Link>}
+            <div className="header-item">
+              {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
+            </div>
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login"
-                                  onClick={handleLoginClick}>Login</Link>}
+            }}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -277,9 +299,13 @@ const WasteRecord = () => {
                 </svg>
             ))}
           </div>
-          <div>
-            <h1>Record your Trash</h1>
-            <p>Let’s find out by recording the amount of trash I throw away</p>
+          <div className="title-setting">
+            <div className="hero-title">
+              <h1>쓰레기 기록</h1>
+            </div>
+            <div className="hero-description">
+              <p>내가 쓰레기를 얼마나 버리는지 기록해봅시다!</p>
+            </div>
           </div>
         </section>
 
@@ -294,10 +320,13 @@ const WasteRecord = () => {
                   plugins: {
                     title: {
                       display: true,
-                      text: 'Weekly Waste Emissions'
+                      text: '이번 달 쓰레기 배출량',
+                      font: {
+                        size: 20,
+                        weight: 'bold'
                     }
                   }
-                }}/>
+                }}}/>
               </div>
               <div className="graph-container">
                 <Pie data={trashTypeRecyclableData} options={{
@@ -305,7 +334,11 @@ const WasteRecord = () => {
                   plugins: {
                     title: {
                       display: true,
-                      text: 'Waste Types & Recycling Status'
+                      text: '쓰레기 종류 & 재활용 상태',
+                      font: {
+                        size: 20,
+                        weight: 'bold'
+                      }
                     }, legend: {position: 'right'}
                   }
                 }}/>
@@ -368,7 +401,7 @@ const WasteRecord = () => {
                       </Link>
                   ))
               ) : (
-                  <p>No records found.</p>
+                  <p>쓰레기를 찾을 수 없습니다.</p>
               )}
             </div>
 

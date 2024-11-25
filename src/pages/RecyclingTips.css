@@ -1,17 +1,22 @@
 .tips-content {
   margin-top: 0;
   padding: 2rem;
-  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .tips-section {
+  width: 1300px;
+  margin-bottom: 100px;
+  grid-template-columns: 1fr;
+  align-items: center;
+  margin-left: 85px;
   opacity: 0;
   transform: translateY(50px);
   overflow: hidden;
   transition: opacity 0.5s, transform 0.5s;
 }
+
 
 .tips-section.visible {
   opacity: 1;
@@ -19,20 +24,25 @@
 }
 
 .tips-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 4rem;
+  display: flex;
+  flex-direction: column; /* 세로로 카드 그룹 정렬 */
+  gap: 2rem;
   padding: 2rem 0;
 }
 
 .tip-card {
-  background: white;
-  border-radius: 15px;
+  background-color: #f9f9f9;
   padding: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tip-card-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2열로 정렬 */
+  grid-template-rows: auto 1fr; /* 헤더와 본문 영역 분리 */
+  gap: 1rem; /* 요소 간 간격 */
+  align-items: start; /* 아이템 수직 정렬 */
 }
 
 .tip-card::before {
@@ -46,19 +56,25 @@
 }
 
 .tip-header {
+  grid-column: span 2; /* 헤더가 두 열을 차지하도록 설정 */
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .tip-icon {
-  width: 50px;
-  height: 50px;
-  fill: #2c7744;
+  width: 400px;
+  height: 400px;
+  margin-left: 100px;
+  fill: #2c7744; /* 아이콘 색상 */
 }
 
 .tip-list {
+  grid-column: 1 / 2;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -68,6 +84,9 @@
   margin: 1rem 0;
   padding-left: 2rem;
   position: relative;
+  font-weight: bold; /* 폰트 굵기 설정 */
+  font-size: 1.5rem; /* 글자 크기 증가 */
+  line-height: 1.5; /* 줄 간격 조정 (가독성 향상) */
 }
 
 .tip-list li::before {
@@ -75,10 +94,11 @@
   position: absolute;
   left: 0;
   color: #2c7744;
+  font-weight: bold; /* 체크 마크도 굵게 설정 */
 }
 
 .tip-category {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   color: #2c7744;
   margin: 0;
 }

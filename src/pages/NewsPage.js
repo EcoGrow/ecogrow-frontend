@@ -13,12 +13,32 @@ const NewsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const newsPerPage = 9;
+  const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [error, setError] = useState(null); // 에러 상태 추가
 
   useEffect(() => {
     const accessToken = localStorage.getItem('token');
     if (accessToken) {  // 로그인 상태 체크
       setIsLoggedIn(true); // 로그인 상태로 설정
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchTemperature = async () => {
+      try {
+        const response = await fetch('/api/weather/temperature');
+        const data = await response.text();
+        setTemperature(data);
+        setIsLoading(false); // 로딩 종료
+      } catch (error) {
+        console.error("Failed to fetch temperature:", error);
+        setTemperature("데이터 없음");
+        setError("기온 정보를 가져오는 데 실패했습니다.");
+        setIsLoading(false); // 로딩 종료
+      }
+    };
+    fetchTemperature();
   }, []);
 
   const handleLoginClick = (e) => {
@@ -84,36 +104,39 @@ const NewsPage = () => {
       <div className="news-page">
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick={(e) => {
-              e.preventDefault();
-              window.location.href = '/';
-            }}>EcoGrow</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}>EcoGrow</Link>
+            </div>
             <Link to="/news" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/news';
-            }}>Environmental News</Link>
+            }}>환경 뉴스</Link>
             <Link to="/wasteRecord" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/wasteRecord';
-            }}>Record Trash</Link>
+            }}>쓰레기 기록</Link>
             <Link to="/recycling-tips" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
-            }}>Recycling Tips</Link>
+            }}>재활용 팁</Link>
             <Link to="/product" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/product';
-            }}>Product</Link>
+            }}>친환경 제품</Link>
           </div>
           <div className="header-right">
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
-              Page</Link>}
+            <div className="header-item">
+              {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
+            </div>
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login"
-                                  onClick={handleLoginClick}>Login</Link>}
+            }}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -130,10 +153,13 @@ const NewsPage = () => {
                 </svg>
             ))}
           </div>
-          <div>
-            <h1>Environmental News</h1>
-            <p>Let’s find out about current environmental issues through
-              environmental news</p>
+          <div className="title-setting">
+            <div className="hero-title">
+              <h1>환경 뉴스</h1>
+            </div>
+            <div className="hero-description">
+              <p>환경뉴스를 통해 현재의 환경 이슈를 알아봅시다!</p>
+            </div>
           </div>
         </section>
 

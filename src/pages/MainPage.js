@@ -12,12 +12,32 @@ const MainPage = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  const [error, setError] = useState(null); // 에러 상태 추가
 
   useEffect(() => {
     const accessToken = localStorage.getItem('token');
     if (accessToken) {  // 로그인 상태 체크
       setIsLoggedIn(true); // 로그인 상태로 설정
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchTemperature = async () => {
+      try {
+        const response = await fetch('/api/weather/temperature');
+        const data = await response.text();
+        setTemperature(data);
+        setIsLoading(false); // 로딩 종료
+      } catch (error) {
+        console.error("Failed to fetch temperature:", error);
+        setTemperature("데이터 없음");
+        setError("기온 정보를 가져오는 데 실패했습니다.");
+        setIsLoading(false); // 로딩 종료
+      }
+    };
+    fetchTemperature();
   }, []);
 
   const showMessage = (msg) => {
@@ -38,9 +58,10 @@ const MainPage = () => {
 
   const handleFloatingButtonClick = () => {
     const accessToken = localStorage.getItem('token');
-    if (accessToken) {
+    if(accessToken) {
       toggleChatModal(true);
-    } else {
+    }
+    else {
       setMessage('로그인 후 이용해주세요');
       setIsModalOpen(true);
     }
@@ -68,7 +89,7 @@ const MainPage = () => {
   };
 
   // 특정 키를 누를 때 RougeLike 게임 이동 이벤트
-  document.addEventListener('keydown', function (event) {
+  document.addEventListener('keydown', function(event) {
     // Ctrl 키가 눌린 상태에서 Alt 키가 눌리면 실행
     if (event.ctrlKey && event.altKey) {
       window.location.href = "https://seokyeongeol.github.io/RougelikeGame/";
@@ -98,36 +119,40 @@ const MainPage = () => {
       <div>
         <header className="header">
           <div className="header-left">
-            <Link to="/" onClick={(e) => {
-              e.preventDefault();
-              window.location.href = '/';
-            }}>EcoGrow</Link>
+            <div className="header-left-item">
+              <Link to="/" onClick={(e) => {
+                e.preventDefault();
+                window.location.href = '/';
+              }}>EcoGrow</Link>
+            </div>
             <Link to="/news" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/news';
-            }}>Environmental News</Link>
+            }}>환경 뉴스</Link>
             <Link to="/wasteRecord" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/wasteRecord';
-            }}>Record Trash</Link>
+            }}>쓰레기 기록</Link>
             <Link to="/recycling-tips" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/recycling-tips';
-            }}>Recycling Tips</Link>
+            }}>재활용 팁</Link>
             <Link to="/product" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/product';
-            }}>Product</Link>
+            }}>친환경 제품</Link>
           </div>
+
           <div className="header-right">
-            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>My
-              Page</Link>}
+            <div className="header-item">
+              {isLoading ? '기온 로딩 중...' : error ? error : `춘천시 기온: ${temperature}`}
+            </div>
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>마이페이지</Link>}
             {isLoggedIn && <Link to="/my-page" onClick={(e) => {
               e.preventDefault();
               window.location.href = '/my-page';
-            }}>My Page</Link>}
-            {!isLoggedIn && <Link to="/login"
-                                  onClick={handleLoginClick}>Login</Link>}
+            }}>마이페이지</Link>}
+            {!isLoggedIn && <Link to="/login" onClick={handleLoginClick}>로그인</Link>}
             {isLoggedIn && <LogoutButton setMessage={showMessage}/>}
           </div>
         </header>
@@ -196,16 +221,30 @@ const MainPage = () => {
         </section>
 
         <section className="content-section visible">
+          <img src="https://cdn-icons-png.flaticon.com/512/9947/9947458.png"
+               alt="News Icon"
+               className="ficon"/>
+          <h2 className="hero">친환경 제품 추천</h2>
+          <p className="sub-hero">친환경 제품을 사용해 우리들의 환경을 지킵시다!</p>
+          <button className="cta-button"
+                  onClick={() => {
+                    navigate('/product');
+                    window.location.reload();
+                  }}>친환경 제품 구매하러 가기
+          </button>
+        </section>
+
+        <section className="content-section visible">
           <img src="/images/free-icon-arcade-machine-4176434.png"
                alt="News Icon"
                className="ficon"/>
           <h2 className="hero2">분리수거 게임</h2>
           <p className="sub-hero2">분리수거 게임을 통해 분리수거의 재미를 느껴보세요!</p>
           <button className="cta-button"
-                  onClick={() => window.location.href = "https://seokyeongeol.github.io/RecyclingGame/"}>게임
-            하러가기
+                  onClick={() => window.location.href = "https://seokyeongeol.github.io/RecyclingGame/"}>게임 하러가기
           </button>
         </section>
+
         {isModalOpen && <Modal message={message} onClose={handleCloseModal}/>}
 
         <FloatingButton onClick={handleFloatingButtonClick}/>

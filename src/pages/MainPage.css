@@ -26,6 +26,16 @@ body, html {
   gap: 1rem;
 }
 
+.header-item {
+  display: flex;
+  margin-top: 8px;
+}
+
+.header-left-item {
+  display: flex;
+  margin-top: 2px;
+}
+
 .header a {
   color: white;
   text-decoration: none;
@@ -114,7 +124,7 @@ body, html {
   background-color: #ffffff;
 }
 
-.content-section:nth-child(even) {
+.content-section:nth-of-type(5) {
   background-color: #2965ff;
 }
 
