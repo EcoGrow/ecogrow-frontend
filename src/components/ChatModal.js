@@ -34,8 +34,27 @@ const ChatModal = ({ isOpen, onClose }) => {
         const userId = localStorage.getItem('userId');
         try {
             const response = await fetch(`/api/chat/rooms/${userId}`);
-            const data = await response.json();
-            setChatRooms(data);
+            const chatRoomsData = await response.json();
+
+            // 각 채팅방의 마지막 메시지를 조회
+            const chatRoomsWithLastMessage = await Promise.all(
+                chatRoomsData.map(async (room) => {
+                    const otherUserId = room.members.find((m) => m.id !== parseInt(userId, 10)).id;
+                    try {
+                        const messageResponse = await fetch(
+                            `/api/chat/messages?userId1=${userId}&userId2=${otherUserId}`
+                        );
+                        const messages = await messageResponse.json();
+                        const lastMessage = messages[messages.length - 1]?.content || '최근 메시지가 없습니다.';
+                        return { ...room, lastMessage };
+                    } catch (error) {
+                        console.error('메시지를 불러오는 중 오류 발생:', error);
+                        return { ...room, lastMessage: '메시지를 불러올 수 없습니다.' };
+                    }
+                })
+            );
+
+            setChatRooms(chatRoomsWithLastMessage);
         } catch (error) {
             console.error('채팅방 정보를 불러오는 중 오류 발생:', error);
         }
@@ -221,7 +240,7 @@ const ChatModal = ({ isOpen, onClose }) => {
                                                     {otherUser ? otherUser.username : '이름 없음'} {/* 상대방 이름 */}
                                                 </div>
                                                 <div className="last-message">
-                                                    {room.lastMessage || '최근 메시지가 없습니다.'} {/* 최근 메시지 */}
+                                                    {room.lastMessage} {/* 최근 메시지 */}
                                                 </div>
                                             </div>
                                         </div>
