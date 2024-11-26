@@ -22,7 +22,7 @@ const WasteRecord = () => {
   const recordsPerPage = 8;
   const [allRecords, setAllRecords] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
-  const { editableStates } = useEditable();   // 수정됐는지 확인
+  const {editableStates} = useEditable();   // 수정됐는지 확인
   const [temperature, setTemperature] = useState(null); // 기온 상태를 null로 초기화
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
   const [error, setError] = useState(null); // 에러 상태 추가
@@ -225,8 +225,11 @@ const WasteRecord = () => {
 
   useEffect(() => {
     fetchData(currentPage);
-    fetchAllRecords();
   }, [currentPage]);
+
+  useEffect(() => {
+    fetchAllRecords();
+  }, []);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -324,9 +327,10 @@ const WasteRecord = () => {
                       font: {
                         size: 20,
                         weight: 'bold'
+                      }
                     }
                   }
-                }}}/>
+                }}/>
               </div>
               <div className="graph-container">
                 <Pie data={trashTypeRecyclableData} options={{

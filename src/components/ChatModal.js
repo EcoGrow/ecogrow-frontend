@@ -190,7 +190,7 @@ const ChatModal = ({ isOpen, onClose }) => {
                         </div>
                     ) : (
                         <div>
-                            <div className="search">
+                            <div className="new-chat">
                                 <input
                                     type="text"
                                     value={searchEmail}
