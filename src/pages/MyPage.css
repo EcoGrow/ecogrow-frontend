@@ -146,7 +146,7 @@ body, html {
   grid-template-columns: repeat(auto-fit, minmax(300px, 500px));
   gap: 2rem;
   margin-bottom: 2rem;
-  margin-left: 13rem;
+  justify-content: center;
 }
 
 .advanced-stats-grid {
@@ -154,7 +154,7 @@ body, html {
   grid-template-columns: repeat(auto-fit, minmax(300px, 500px));
   gap: 2rem;
   margin-bottom: 2rem;
-  margin-left: 13rem;
+  justify-content: center;
 }
 
 .stat-card {
